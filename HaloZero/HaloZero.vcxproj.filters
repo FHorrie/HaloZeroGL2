@@ -1,0 +1,234 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Game Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Engine Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Game Files\Sprites">
+      <UniqueIdentifier>{f4e20e26-4745-4cf9-ad2c-11a380aba5e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Level">
+      <UniqueIdentifier>{35b6dc42-9797-4139-83c2-0e452ae1b85d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Camera">
+      <UniqueIdentifier>{0175b27c-6d25-4f72-b86c-5994cbf08ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\HUD">
+      <UniqueIdentifier>{4b1dfcad-99a7-4fb9-9149-aa593d26b308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\SoundManager">
+      <UniqueIdentifier>{3e02d849-1c28-42e8-97af-5679228e2eb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\StaticTextures">
+      <UniqueIdentifier>{f0d6a0c1-f8a5-4dc2-a934-8c35a0dbbd8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite">
+      <UniqueIdentifier>{c4107faa-9136-43c4-a1c4-c11f62ce92cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\MasterChief">
+      <UniqueIdentifier>{4ec28460-87f7-4299-8442-b846faa4b3f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\MasterChief\MasterChiefBase">
+      <UniqueIdentifier>{0be34049-d05f-46a4-be40-9ac7eb20d2dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\MasterChief\MasterChiefBase\Legs">
+      <UniqueIdentifier>{9d4fb0f1-bb59-4301-a187-8a780faafa51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\MasterChief\MasterChiefBase\Top">
+      <UniqueIdentifier>{21f37bbe-e6f0-421f-b5bb-ec81c91546a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\Enemy">
+      <UniqueIdentifier>{9705f7c5-39dd-4163-8c02-d9933fa9ae4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\Enemy\EliteRifle">
+      <UniqueIdentifier>{b0004c5e-ea65-4dbd-958c-886bdb868bbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\Enemy\Jackal">
+      <UniqueIdentifier>{a202d723-7039-494c-9887-d4e662fc2763}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\Enemy\Imp">
+      <UniqueIdentifier>{c3e2a4b4-f51d-4c76-b2bb-d9c187690fb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\Enemy\Imp\ImpPistol">
+      <UniqueIdentifier>{28c8f4c5-7bcd-4324-bee9-038e6d303cd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\Enemy\Imp\ImpNeedle">
+      <UniqueIdentifier>{01dcd902-23ae-4699-b448-d9736b5cd821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\Enemy\Hunter">
+      <UniqueIdentifier>{9f368f4c-8430-448d-8b20-043bdc1afda5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\Bullets">
+      <UniqueIdentifier>{11a79eac-4e6a-44bb-aac0-593d74a69eed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\AnimatedSprite\EnvironmentSprite">
+      <UniqueIdentifier>{11d0006e-8628-446b-91a1-48eabcac1298}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\GunPickup">
+      <UniqueIdentifier>{0b6aa518-71c4-4beb-932b-c046e1d9eaba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\Projectile">
+      <UniqueIdentifier>{daf03139-27c0-471a-8c80-40dfa53f12cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Files\Sprites\Screens">
+      <UniqueIdentifier>{10eacf36-58a8-48ab-951c-b4df9e154e3e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Game.cpp">
+      <Filter>Game Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Engine Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimatedSprite.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite</Filter>
+    </ClCompile>
+    <ClCompile Include="MasterChiefLegs.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\MasterChief\MasterChiefBase\Legs</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>Game Files\Level</Filter>
+    </ClCompile>
+    <ClCompile Include="MasterChiefTorso.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\MasterChief\MasterChiefBase\Top</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Game Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="GunPickup.cpp">
+      <Filter>Game Files\Sprites\GunPickup</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyBase.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="ImpPistol.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy\Imp\ImpPistol</Filter>
+    </ClCompile>
+    <ClCompile Include="EliteRifle.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy\EliteRifle</Filter>
+    </ClCompile>
+    <ClCompile Include="Jackal.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy\Jackal</Filter>
+    </ClCompile>
+    <ClCompile Include="CasingSprite.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\Bullets</Filter>
+    </ClCompile>
+    <ClCompile Include="ImpNeedle.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy\Imp\ImpNeedle</Filter>
+    </ClCompile>
+    <ClCompile Include="Hunter.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy\Hunter</Filter>
+    </ClCompile>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>Game Files\Sprites\Projectile</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticTextures.cpp">
+      <Filter>Game Files\StaticTextures</Filter>
+    </ClCompile>
+    <ClCompile Include="MasterChiefBase.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\MasterChief\MasterChiefBase</Filter>
+    </ClCompile>
+    <ClCompile Include="EnvironmentSprite.cpp">
+      <Filter>Game Files\Sprites\AnimatedSprite\EnvironmentSprite</Filter>
+    </ClCompile>
+    <ClCompile Include="Screen.cpp">
+      <Filter>Game Files\Sprites\Screens</Filter>
+    </ClCompile>
+    <ClCompile Include="HUD.cpp">
+      <Filter>Game Files\HUD</Filter>
+    </ClCompile>
+    <ClCompile Include="StaticSprite.cpp">
+      <Filter>Game Files\Sprites</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>Game Files\SoundManager</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Game Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimatedSprite.h">
+      <Filter>Game Files\Sprites\AnimatedSprite</Filter>
+    </ClInclude>
+    <ClInclude Include="MasterChiefLegs.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\MasterChief\MasterChiefBase\Legs</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>Game Files\Level</Filter>
+    </ClInclude>
+    <ClInclude Include="MasterChiefTorso.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\MasterChief\MasterChiefBase\Top</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Game Files\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="GunPickup.h">
+      <Filter>Game Files\Sprites\GunPickup</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyBase.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="ImpPistol.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy\Imp\ImpPistol</Filter>
+    </ClInclude>
+    <ClInclude Include="EliteRifle.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy\EliteRifle</Filter>
+    </ClInclude>
+    <ClInclude Include="Jackal.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy\Jackal</Filter>
+    </ClInclude>
+    <ClInclude Include="debugpch.h">
+      <Filter>Engine Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CasingSprite.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\Bullets</Filter>
+    </ClInclude>
+    <ClInclude Include="ImpNeedle.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy\Imp\ImpNeedle</Filter>
+    </ClInclude>
+    <ClInclude Include="Hunter.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\Enemy\Hunter</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Game Files\Sprites\Projectile</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticTextures.h">
+      <Filter>Game Files\StaticTextures</Filter>
+    </ClInclude>
+    <ClInclude Include="MasterChiefBase.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\MasterChief\MasterChiefBase</Filter>
+    </ClInclude>
+    <ClInclude Include="EnvironmentSprite.h">
+      <Filter>Game Files\Sprites\AnimatedSprite\EnvironmentSprite</Filter>
+    </ClInclude>
+    <ClInclude Include="Screen.h">
+      <Filter>Game Files\Sprites\Screens</Filter>
+    </ClInclude>
+    <ClInclude Include="HUD.h">
+      <Filter>Game Files\HUD</Filter>
+    </ClInclude>
+    <ClInclude Include="StaticSprite.h">
+      <Filter>Game Files\Sprites</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>Game Files\SoundManager</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
