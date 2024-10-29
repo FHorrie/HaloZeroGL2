@@ -10,4 +10,3 @@ The project is made in a custom engine provided by Howest Digital Arts & Enterta
 It was a major leap in development knowledge and skills from my side, as it was the first project I made that has a complete game loop.
 
 Being made in C++, at the time I did not use many of the C++ standard features. The code presented is of a lower quality standard than what I believe I do now.
----
