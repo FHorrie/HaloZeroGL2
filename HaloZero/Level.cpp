@@ -4,12 +4,12 @@
 #include "svgparser.h"
 #include <iostream>
 
-Level::Level() :
-	m_pOutsideTexture{ new Texture("BackGround/BackgroundOutside.png") },
-	m_pBackGroundTexture{ new Texture{ "BackGround/FacilityBack.png" } },
-	m_pForeGroundTexture{ new Texture{ "BackGround/FacilityFront.png"}},
-	m_Boundaries{ 0, 0, m_pBackGroundTexture->GetWidth(), m_pBackGroundTexture->GetHeight() },
-	m_EndShape{11630, 400, 100, 10}
+Level::Level() 
+	: m_pOutsideTexture{ new Texture("BackGround/BackgroundOutside.png") }
+	, m_pBackGroundTexture{ new Texture{ "BackGround/FacilityBack.png" } }
+	, m_pForeGroundTexture{ new Texture{ "BackGround/FacilityFront.png"}}
+	, m_Boundaries{ 0, 0, m_pBackGroundTexture->GetWidth(), m_pBackGroundTexture->GetHeight() }
+	, m_EndShape{11630, 400, 100, 10}
 {
 	SVGParser::GetVerticesFromSvgFile("BackGround/Facility.svg", m_Vertices);
 }

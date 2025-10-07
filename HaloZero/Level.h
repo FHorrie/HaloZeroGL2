@@ -35,7 +35,5 @@ private:
 	Texture* m_pForeGroundTexture;
 	const Rectf m_Boundaries;
 	const Rectf m_EndShape;
-
-	
 };
 
