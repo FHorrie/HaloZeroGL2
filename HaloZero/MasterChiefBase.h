@@ -1,6 +1,5 @@
 #pragma once
 #include "AnimatedSprite.h"
-#include "Vector2f.h"
 #include "Level.h"
 
 enum class MoveState
