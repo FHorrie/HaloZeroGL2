@@ -50,7 +50,7 @@ protected:
 	ActionState m_ActionState{ ActionState::Holding };
 
 	float m_JumpBuffer{};
-	const float m_HorSpeed;
+	const float m_MoveSpeed;
 	const float m_JumpSpeed;
 
 	bool m_IsFlipped{ false };

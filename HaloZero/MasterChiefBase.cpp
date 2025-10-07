@@ -6,7 +6,7 @@ MasterChiefBase::MasterChiefBase(const std::string& spriteType, const StaticText
 	m_HitBox{startLocation.x, startLocation.y, 70, 104 },
 	m_Velocity{ 0, 0 },
 	m_Acceleration{ 0, -1200 },
-	m_HorSpeed{300},
+	m_MoveSpeed{300},
 	m_JumpSpeed{600}
 
 {
@@ -48,10 +48,10 @@ void MasterChiefBase::UpdatePosition(float elapsedSec, const Level& level)
 		switch (m_MoveState)
 		{
 		case MoveState::Waiting:
-			m_Velocity = Vector2f{0.f, 0.f};
+			m_Velocity = Vector2f{ 0.f, 0.f };
 			break;
 		case MoveState::Running:
-			m_Velocity.x = m_HorSpeed;
+			m_Velocity.x = m_MoveSpeed;
 			break;
 		case MoveState::Jumping:
 			m_Velocity.y = m_JumpSpeed;
@@ -60,7 +60,7 @@ void MasterChiefBase::UpdatePosition(float elapsedSec, const Level& level)
 			m_Velocity = Vector2f{ 0.f, 0.f };
 			break;
 		case MoveState::RunningCrouch:
-			m_Velocity.x = m_HorSpeed / 2.f;
+			m_Velocity.x = m_MoveSpeed / 2.f;
 			break;
 		default:
 			break;
