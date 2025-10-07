@@ -4,28 +4,28 @@
 
 enum class MoveState
 {
-	waiting,
-	running,
-	jumping,
-	waitingCrouch,
-	runningCrouch
+	Waiting,
+	Running,
+	Jumping,
+	WaitingCrouch,
+	RunningCrouch
 };
 
 enum class ActionState
 {
-	holding,
-	shooting,
-	melee,
-	grenade
+	Holding,
+	Shooting,
+	Melee,
+	Grenade
 };
 
 enum class GunType
 {
-	smart,
-	magnum,
-	pistol,
-	rifle,
-	needle
+	SmartRifle,
+	MagnumPistol,
+	PlasmaPistol,
+	PlasmaRifle,
+	Needler
 };
 
 class MasterChiefBase : public AnimatedSprite
@@ -41,22 +41,21 @@ public:
 	Point2f GetDropPoint() const;
 
 protected:
-	MoveState m_MoveState;
-	ActionState m_ActionState;
-
-	float m_JumpBuffer;
+	Vector2f m_Acceleration;
+	Vector2f m_Velocity;
 
 	Rectf m_HitBox;
 
-	Vector2f m_DirVelocity;
-	Vector2f m_Acceleration;
+	MoveState m_MoveState{ MoveState::Waiting };
+	ActionState m_ActionState{ ActionState::Holding };
+
+	float m_JumpBuffer{};
 	const float m_HorSpeed;
 	const float m_JumpSpeed;
 
-	bool m_IsFlipped = false;
-	bool m_IsBackwards = false;
-	bool m_IsDead = false;
-
+	bool m_IsFlipped{ false };
+	bool m_IsBackwards{ false };
+	bool m_IsDead{ false };
 	
 	void ChangeMovementState(MoveState state);
 	void ChangeActionState(ActionState state);

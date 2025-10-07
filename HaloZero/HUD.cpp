@@ -67,24 +67,24 @@ void HUD::DrawAmmoHUD() const
 
 	switch (m_GunType)
 	{
-	case GunType::smart:
+	case GunType::SmartRifle:
 		drawAmmo = true;
 		magSize = 60;
 		rowSplitCount = 4;
 		row = 3;
 		break;
-	case GunType::magnum:
+	case GunType::MagnumPistol:
 		drawAmmo = true;
 		magSize = 10;
 		row = 2;
 		break;
-	case GunType::pistol:
+	case GunType::PlasmaPistol:
 		drawAmmo = false;
 		break;
-	case GunType::rifle:
+	case GunType::PlasmaRifle:
 		drawAmmo = false;
 		break;
-	case GunType::needle:
+	case GunType::Needler:
 		drawAmmo = true;
 		magSize = 20;
 		row = 1;
@@ -190,19 +190,19 @@ void HUD::SetType(GunType type)
 
 	switch (m_GunType)
 	{
-	case GunType::smart:
+	case GunType::SmartRifle:
 		m_EnergyWeapon = false;
 		break;
-	case GunType::magnum:
+	case GunType::MagnumPistol:
 		m_EnergyWeapon = false;
 		break;
-	case GunType::pistol:
+	case GunType::PlasmaPistol:
 		m_EnergyWeapon = true;
 		break;
-	case GunType::rifle:
+	case GunType::PlasmaRifle:
 		m_EnergyWeapon = true;
 		break;
-	case GunType::needle:
+	case GunType::Needler:
 		m_EnergyWeapon = false;
 		break;
 	default:

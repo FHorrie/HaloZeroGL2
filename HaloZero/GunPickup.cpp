@@ -17,23 +17,23 @@ GunPickup::GunPickup(const StaticTextures& textures, const Point2f& startLocatio
 {
 	switch (type)
 	{
-	case GunType::smart:
+	case GunType::SmartRifle:
 		m_Ammo = 15 + rand() % 34;
 		m_Reserve = 30 + rand() % 90;
 		break;
-	case GunType::magnum:
+	case GunType::MagnumPistol:
 		m_Ammo = 4 + rand() % 6;
 		m_Reserve = 30 + rand() % 90;
 		break;
-	case GunType::pistol:
+	case GunType::PlasmaPistol:
 		m_Ammo = 70 + rand() % 25;
 		m_Reserve = 0;
 		break;
-	case GunType::rifle:
+	case GunType::PlasmaRifle:
 		m_Ammo = 70 + rand() % 25;
 		m_Reserve = 0;
 		break;
-	case GunType::needle:
+	case GunType::Needler:
 		m_Ammo = 12 + rand() % 6;
 		m_Reserve = 10 + rand() % 30;
 		break;

@@ -60,42 +60,42 @@ void MasterChiefLegs::InputStateMovement()
 	//Movement states
 	if (pStates[SDL_SCANCODE_SPACE])
 	{
-		if (m_MoveState != MoveState::jumping && m_MoveState != MoveState::waitingCrouch && m_MoveState != MoveState::runningCrouch)
-			ChangeMovementState(MoveState::jumping);
+		if (m_MoveState != MoveState::Jumping && m_MoveState != MoveState::WaitingCrouch && m_MoveState != MoveState::RunningCrouch)
+			ChangeMovementState(MoveState::Jumping);
 	}
 	else if (pStates[SDL_SCANCODE_D] && pStates[SDL_SCANCODE_S])
 	{
-		if (m_MoveState != MoveState::runningCrouch)
-			ChangeMovementState(MoveState::runningCrouch);
+		if (m_MoveState != MoveState::RunningCrouch)
+			ChangeMovementState(MoveState::RunningCrouch);
 		m_IsBackwards = m_IsFlipped;
 	}
 	else if (pStates[SDL_SCANCODE_A] && pStates[SDL_SCANCODE_S])
 	{
-		if (m_MoveState != MoveState::runningCrouch)
-			ChangeMovementState(MoveState::runningCrouch);
+		if (m_MoveState != MoveState::RunningCrouch)
+			ChangeMovementState(MoveState::RunningCrouch);
 		m_IsBackwards = !m_IsFlipped;
 	}
 	else if (pStates[SDL_SCANCODE_S])
 	{
-		if (m_MoveState != MoveState::waitingCrouch)
-			ChangeMovementState(MoveState::waitingCrouch);
+		if (m_MoveState != MoveState::WaitingCrouch)
+			ChangeMovementState(MoveState::WaitingCrouch);
 	}
 	else if (pStates[SDL_SCANCODE_D])
 	{
-		if (m_MoveState != MoveState::running)
-			ChangeMovementState(MoveState::running);
+		if (m_MoveState != MoveState::Running)
+			ChangeMovementState(MoveState::Running);
 		m_IsBackwards = m_IsFlipped;
 	}
 	else if (pStates[SDL_SCANCODE_A])
 	{
-		if (m_MoveState != MoveState::running)
-			ChangeMovementState(MoveState::running);
+		if (m_MoveState != MoveState::Running)
+			ChangeMovementState(MoveState::Running);
 		m_IsBackwards = !m_IsFlipped;
 	}
 	else
 	{
-		if (m_MoveState != MoveState::waiting)
-			ChangeMovementState(MoveState::waiting);
+		if (m_MoveState != MoveState::Waiting)
+			ChangeMovementState(MoveState::Waiting);
 	}
 }
 
@@ -104,27 +104,27 @@ void MasterChiefLegs::UpdateFramesState()
 
 	switch (m_MoveState)
 	{
-	case MoveState::waiting:
+	case MoveState::Waiting:
 		m_nFrames = 1;
 		m_CurrentRow = 0;
 		m_Looped = false;
 		break;
-	case MoveState::running:
+	case MoveState::Running:
 		m_nFrames = 9;
 		m_CurrentRow = 1;
 		m_Looped = true;
 		break;
-	case MoveState::jumping:
+	case MoveState::Jumping:
 		m_nFrames = 5;
 		m_CurrentRow = 2;
 		m_Looped = false;
 		break;
-	case MoveState::waitingCrouch:
+	case MoveState::WaitingCrouch:
 		m_nFrames = 1;
 		m_CurrentRow = 3;
 		m_Looped = false;
 		break;
-	case MoveState::runningCrouch:
+	case MoveState::RunningCrouch:
 		m_nFrames = 4;
 		m_CurrentRow = 3;
 		m_Looped = true;

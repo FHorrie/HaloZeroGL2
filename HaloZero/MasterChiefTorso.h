@@ -37,18 +37,18 @@ public:
 	void ChangeGun(GunType type, int ammo, int reserve);
 	void AddReserve(int reserve, GunType type);
 
-	GunType GetActiveGun() const;
-	GunType GetPrimary() const;
-	GunType GetSecondary() const;
+	GunType GetActiveGun() const { return m_IsSecondaryEquipped ? m_SecondSlot : m_FirstSlot; }
+	GunType GetPrimary() const { return m_FirstSlot; }
+	GunType GetSecondary() const { return m_SecondSlot; }
 
-	float GetAngle() const;
+	float GetAngle() const { return m_Angle; }
 
-	int GetAmmo() const;
-	int GetReserve() const;
+	int GetAmmo() const { return m_IsSecondaryEquipped ? m_SecondaryAmmo : m_PrimaryAmmo; }
+	int GetReserve() const { return m_IsSecondaryEquipped ? m_SecondaryReserve : m_PrimaryReserve; }
 
-	float GetShield(bool max) const;
-	float GetHealth(bool max) const;
-	bool IsDead() const;
+	float GetShield(bool max) const { return max ? m_MaxShield : m_Shield; }
+	float GetHealth(bool max) const { return max ? m_MaxHealth : m_Health; }
+	bool IsDead() const { return m_Dead; }
 
 private:
 
@@ -58,55 +58,51 @@ private:
 	float m_Health{ m_MaxHealth };
 	bool m_Dead{ false };
 
-	float m_RegenAccuTime;
-	const float m_MaxRegenTime;
-	float m_ShieldAccuTime;
-	const float m_MaxShieldTime;
+	float m_RegenAccuTime{};
+	const float m_MaxRegenTime{2.f};
+	float m_ShieldAccuTime{};
+	const float m_MaxShieldTime{0.02f};
 
-	int m_PrimaryAmmo;
-	int m_PrimaryReserve;
+	int m_PrimaryAmmo{60};
+	int m_PrimaryReserve{60};
+	float m_PrimaryReloadTime{};
 
-	int m_SecondaryAmmo;
-	int m_SecondaryReserve;
+	int m_SecondaryAmmo{10};
+	int m_SecondaryReserve{20};
+	float m_SecondaryReloadTime{};
 
-	float m_PrimaryReloadTime;
-	float m_SecondaryReloadTime;
-
-	GunType m_FirstSlot;
-	GunType m_SecondSlot;
+	Texture* m_pCrossHairTex{};
+	GunType m_FirstSlot{ GunType::SmartRifle };
+	GunType m_SecondSlot{ GunType::MagnumPistol };
 	bool m_IsSecondaryEquipped = false;
 
-	const SoundEffect* m_pSmartRifleShot;
-	const SoundEffect* m_pMagnumShot;
-	const SoundEffect* m_pPlasmaPistolShot;
-	const SoundEffect* m_pPlasmaRifleShot;
-	const SoundEffect* m_pNeedlerShot;
-	const SoundEffect* m_pMeleeSound;
+	const SoundEffect* m_pSmartRifleShot{};
+	const SoundEffect* m_pMagnumShot{};
+	const SoundEffect* m_pPlasmaPistolShot{};
+	const SoundEffect* m_pPlasmaRifleShot{};
+	const SoundEffect* m_pNeedlerShot{};
+	const SoundEffect* m_pMeleeSound{};
 
-	float m_ShieldBeepTime;
-	bool m_RechargePlayed = false;
+	float m_ShieldBeepTime{};
+	bool m_RechargePlayed{ false };
 
 	const SoundEffect* m_pShieldBeep;
 	const SoundEffect* m_pShieldRecharge;
 
-	Point2f m_MousePos;
-	Point2f m_LastCamMove;
-	float m_Angle;
+	Point2f m_MousePos{};
+	Point2f m_LastCamMove{};
+	float m_Angle{};
 
-	bool m_LMouse = false;
-	bool m_ShotFired = false;
-	bool m_Meleeing = false;
-	bool m_DecreaseAmmo = false;
-	bool m_NoFire = false;
+	bool m_LMouse{ false };
+	bool m_ShotFired{ false };
+	bool m_Meleeing{ false };
+	bool m_DecreaseAmmo{ false };
+	bool m_NoFire{ false };
 
 	std::vector<CasingSprite*> m_CasingSpriteArr;
 
-	
-
-	unsigned short m_RowOffset;
-	unsigned short m_CurrentRow;
-
-	Texture* m_pCrossHairTex;
+	unsigned short m_RowOffset{};
+	unsigned short m_CurrentRow{};
 	
 	void DrawMouseLine() const;
 	void CalcMouseAngle();
@@ -119,6 +115,7 @@ private:
 	void DeleteCasing();
 	void DrawCasing() const;
 	void UpdateCasing(float elapsedSec, const Level& level, const StaticTextures& textures);
+	int GetWeaponMagSize(GunType type);
 	
 	
 };

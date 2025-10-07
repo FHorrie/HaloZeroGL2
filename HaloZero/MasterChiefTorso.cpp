@@ -7,21 +7,10 @@
 #include <iostream>
 
 MasterChiefTorso::MasterChiefTorso(const StaticTextures& textures, const SoundManager& sounds, const Point2f& startLocation, unsigned short framerate, const Rectf& window)
-	:MasterChiefBase("MasterChiefTorso", textures, startLocation, framerate, 11, 5)
-	, m_RegenAccuTime{}
-	, m_MaxRegenTime{2.f}
-	, m_ShieldAccuTime{}
-	, m_MaxShieldTime{0.02f}
+	: MasterChiefBase("MasterChiefTorso", textures, startLocation, framerate, 11, 5)
 
-	, m_PrimaryAmmo{60}
-	, m_PrimaryReserve{60}
-	, m_PrimaryReloadTime{}
-	, m_SecondaryAmmo{10}
-	, m_SecondaryReserve{20}
-	, m_SecondaryReloadTime{}
-
-	, m_FirstSlot{ GunType::smart }
-	, m_SecondSlot{ GunType::magnum }
+	, m_FirstSlot{ GunType::SmartRifle }
+	, m_SecondSlot{ GunType::MagnumPistol }
 
 	, m_pSmartRifleShot{ sounds.GetSoundEffect("SmartRifleShot") }
 	, m_pMagnumShot{ sounds.GetSoundEffect("MagnumShot") }
@@ -30,20 +19,12 @@ MasterChiefTorso::MasterChiefTorso(const StaticTextures& textures, const SoundMa
 	, m_pNeedlerShot{ sounds.GetSoundEffect("NeedlerShot") }
 	, m_pMeleeSound{ sounds.GetSoundEffect("Melee")}
 
-	, m_ShieldBeepTime{}
-
 	, m_pShieldBeep{ sounds.GetSoundEffect("ShieldBeep") }
 	, m_pShieldRecharge{ sounds.GetSoundEffect("ShieldRecharge")}
 
 	, m_MousePos{ Point2f{2 * window.width / 3.f, window.height / 1.8f} }
-	, m_LastCamMove{}
-	, m_Angle{}
-	, m_RowOffset{}
-	, m_CurrentRow{}
-	, m_CasingSpriteArr{}
 	, m_pCrossHairTex{new Texture("MasterChief/CrossHairs.png")}
-{
-}
+{}
 
 MasterChiefTorso::~MasterChiefTorso()
 {
@@ -129,10 +110,8 @@ void MasterChiefTorso::CalcMouseAngle()
 	Point2f startPoint = Point2f(m_HitBox.left + m_HitBox.width / 2, m_HitBox.bottom + 3 * m_HitBox.height / 4);
 	float pi{ float(M_PI) };
 	float angle{ atan2f(m_MousePos.y - startPoint.y, m_MousePos.x - startPoint.x)};
-	if (angle > pi/2 || angle < -pi/2)
-		m_IsFlipped = true;
-	else
-		m_IsFlipped = false;
+
+	m_IsFlipped = angle > pi / 2 || angle < -pi / 2;
 
 	if (m_IsFlipped)
 	{
@@ -159,18 +138,18 @@ void MasterChiefTorso::DrawCrossHair() const
 void MasterChiefTorso::HandleFire(bool activate)
 {
 	m_LMouse = activate;
-	if (m_ActionState != ActionState::grenade && m_ActionState != ActionState::melee)
+	if (m_ActionState != ActionState::Grenade && m_ActionState != ActionState::Melee)
 	{
-		if (m_LMouse && m_ActionState != ActionState::shooting)
-			ChangeActionState(ActionState::shooting);
+		if (m_LMouse && m_ActionState != ActionState::Shooting)
+			ChangeActionState(ActionState::Shooting);
 	}
 }
 
 void MasterChiefTorso::HandleMelee()
 {
-	if (m_ActionState != ActionState::grenade && m_ActionState != ActionState::melee)
+	if (m_ActionState != ActionState::Grenade && m_ActionState != ActionState::Melee)
 	{
-		ChangeActionState(ActionState::melee);
+		ChangeActionState(ActionState::Melee);
 		m_Meleeing = true;
 	}
 }
@@ -212,11 +191,6 @@ void MasterChiefTorso::HandleRegen(float elapsedSec)
 			m_pShieldBeep->Play(0);
 			m_ShieldBeepTime -= 0.2f;
 		}
-		/*if (m_RechargePlayed)
-		{
-			m_pShieldRecharge->StopAll();
-			m_RechargePlayed = false;
-		}*/
 	}
 	else if (m_Shield < m_MaxShield)
 	{	
@@ -235,11 +209,6 @@ void MasterChiefTorso::HandleRegen(float elapsedSec)
 	}
 	else
 	{
-		/*if (m_RechargePlayed)
-		{
-			m_pShieldRecharge->StopAll();
-			m_RechargePlayed = false;
-		}*/
 		m_RechargePlayed = false;
 		m_ShieldBeepTime = 0.f;
 		m_ShieldAccuTime = 0.f;
@@ -252,36 +221,18 @@ void MasterChiefTorso::HandleAmmo(float elapsedSec)
 {
 	if (m_DecreaseAmmo)
 	{
-		(!m_IsSecondaryEquipped) ? --m_PrimaryAmmo : --m_SecondaryAmmo;
+		m_IsSecondaryEquipped == false ? --m_PrimaryAmmo : --m_SecondaryAmmo;
 		//std::cout << "PA: " << m_PrimaryAmmo << " SA: " << m_SecondaryAmmo << "\n";
 		m_DecreaseAmmo = false;
 	}
 
-	if (m_PrimaryAmmo <= 0 && !m_IsSecondaryEquipped)
+	if (m_IsSecondaryEquipped == false && m_PrimaryAmmo <= 0)
 	{
 		m_NoFire = true;
 		m_PrimaryReloadTime += elapsedSec;
 		if (m_PrimaryReloadTime >= 2.f && m_PrimaryReserve > 0)
 		{
-			int magSize{};
-			switch (m_FirstSlot)
-			{
-			case GunType::smart:
-				magSize = 60;
-				break;
-			case GunType::magnum:
-				magSize = 10;
-				break;
-			case GunType::pistol:
-
-				break;
-			case GunType::rifle:
-
-				break;
-			case GunType::needle:
-				magSize = 20;
-				break;
-			}
+			int magSize{ GetWeaponMagSize(m_FirstSlot) };
 			if (m_PrimaryReserve <= magSize)
 			{
 				m_PrimaryAmmo = m_PrimaryReserve;
@@ -298,31 +249,13 @@ void MasterChiefTorso::HandleAmmo(float elapsedSec)
 		}
 	}
 
-	else if (m_SecondaryAmmo <= 0 && m_IsSecondaryEquipped)
+	else if (m_IsSecondaryEquipped && m_SecondaryAmmo <= 0)
 	{
 		m_NoFire = true;
 		m_SecondaryReloadTime += elapsedSec;
 		if (m_SecondaryReloadTime >= 2.f && m_SecondaryReserve > 0)
 		{
-			int magSize{};
-			switch (m_SecondSlot)
-			{
-			case GunType::smart:
-				magSize = 60;
-				break;
-			case GunType::magnum:
-				magSize = 10;
-				break;
-			case GunType::pistol:
-
-				break;
-			case GunType::rifle:
-
-				break;
-			case GunType::needle:
-				magSize = 20;
-				break;
-			}
+			int magSize{ GetWeaponMagSize(m_SecondSlot) };
 			if (m_SecondaryReserve <= magSize)
 			{
 				m_SecondaryAmmo = m_SecondaryReserve;
@@ -341,32 +274,43 @@ void MasterChiefTorso::HandleAmmo(float elapsedSec)
 	else m_NoFire = false;
 }
 
+int MasterChiefTorso::GetWeaponMagSize(GunType type)
+{
+	switch (type)
+	{
+	case GunType::SmartRifle:
+		return 60;
+	case GunType::MagnumPistol:
+		return 10;
+	case GunType::Needler:
+		return 20;
+	default:
+		return 0;
+	}
+}
+
 void MasterChiefTorso::InputStateAction()
 {
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 
 	//Action states
 	if (pStates[SDL_SCANCODE_G])
-	{
-		//if (m_ActionState != ActionState::grenade)
-			m_ActionState = ActionState::grenade;
-	}
+		m_ActionState = ActionState::Grenade;
+
 	if (pStates[SDL_SCANCODE_1])
 		m_IsSecondaryEquipped = false;
-
 	if (pStates[SDL_SCANCODE_2])
 		m_IsSecondaryEquipped = true;
 }
 
 void MasterChiefTorso::UpdateFramesState()
 {
-
 	switch (m_ActionState)
 	{
-	case ActionState::holding:
+	case ActionState::Holding:
 		m_nFrames = 1;
 
-		if (!m_IsSecondaryEquipped)
+		if (m_IsSecondaryEquipped == false)
 			m_CurrentRow = int(m_FirstSlot);
 		else 
 			m_CurrentRow = int(m_SecondSlot);
@@ -374,53 +318,29 @@ void MasterChiefTorso::UpdateFramesState()
 		m_RowOffset = 0;
 		m_Looped = false;
 		break;
-	case ActionState::shooting:
+	case ActionState::Shooting:
 		m_nFrames = 2;
-		if (!m_IsSecondaryEquipped)
+
+		switch (m_IsSecondaryEquipped ? m_SecondSlot : m_FirstSlot)
 		{
-			switch (m_FirstSlot)
-			{
-			case GunType::smart:
-				m_Framerate = 15;
-				break;
-			case GunType::magnum:
-				m_Framerate = 8;
-				break;
-			case GunType::pistol:
-				m_Framerate = 10;
-				break;
-			case GunType::rifle:
-				m_Framerate = 10;
-				break;
-			case GunType::needle:
-				m_Framerate = 10;
-				break;
-			default:
-				break;
-			}
-		}
-		else
-		{
-			switch (m_SecondSlot)
-			{
-			case GunType::smart:
-				m_Framerate = 12;
-				break;
-			case GunType::magnum:
-				m_Framerate = 8;
-				break;
-			case GunType::pistol:
-				m_Framerate = 10;
-				break;
-			case GunType::rifle:
-				m_Framerate = 10;
-				break;
-			case GunType::needle:
-				m_Framerate = 10;
-				break;
-			default:
-				break;
-			}
+		// We set the framerate to match the firerate
+		case GunType::SmartRifle:
+			m_Framerate = 15;
+			break;
+		case GunType::MagnumPistol:
+			m_Framerate = 8;
+			break;
+		case GunType::PlasmaPistol:
+			m_Framerate = 10;
+			break;
+		case GunType::PlasmaRifle:
+			m_Framerate = 10;
+			break;
+		case GunType::Needler:
+			m_Framerate = 10;
+			break;
+		default:
+			break;
 		}
 		
 		if (!m_IsSecondaryEquipped)
@@ -431,7 +351,7 @@ void MasterChiefTorso::UpdateFramesState()
 		m_RowOffset = 0;
 		m_Looped = true;
 		break;
-	case ActionState::melee:
+	case ActionState::Melee:
 		m_nFrames = 2;
 		m_Framerate = 8;
 
@@ -443,7 +363,7 @@ void MasterChiefTorso::UpdateFramesState()
 		m_RowOffset = 1;
 		m_Looped = false;
 		break;
-	case ActionState::grenade:
+	case ActionState::Grenade:
 		m_nFrames = 5;
 		m_Framerate = 10;
 		m_CurrentRow = 5;
@@ -462,44 +382,42 @@ void MasterChiefTorso::UpdateCurrentFrame(float elapsedSec)
 	}
 	if (m_NoFire)
 	{
-		if (m_ActionState == ActionState::shooting)
-			ChangeActionState(ActionState::holding);
+		if (m_ActionState == ActionState::Shooting)
+			ChangeActionState(ActionState::Holding);
 	}
 
 	m_AccuTime += elapsedSec;
 
-	if (m_AccuTime >= (1.f / m_Framerate))
+	if (m_AccuTime < (1.f / m_Framerate)) return;
+
+	m_AccuTime = 0;
+
+	if (m_CurrentFrame < (m_nFrames - 1))
 	{
-		m_AccuTime -= 1.f / m_Framerate;
-
-		if (m_CurrentFrame < (m_nFrames - 1))
+		m_CurrentFrame++;
+	}
+	else
+	{
+		if (m_ActionState == ActionState::Shooting)
 		{
-			m_CurrentFrame++;
+			m_ShotFired = true;
+			m_DecreaseAmmo = true;
+			if(!m_LMouse || m_NoFire)
+				ChangeActionState(ActionState::Holding);
 		}
-		else
-		{
-			if (m_ActionState == ActionState::shooting)
-			{
-				m_ShotFired = true;
-				m_DecreaseAmmo = true;
-				if(!m_LMouse || m_NoFire)
-					ChangeActionState(ActionState::holding);
-			}
 
-			if (m_Looped)
-				m_CurrentFrame = 0;
+		if (m_Looped)
+			m_CurrentFrame = 0;
 
-			else if (m_ActionState == ActionState::grenade || m_ActionState == ActionState::melee)
-				ChangeActionState(ActionState::holding);
+		else if (m_ActionState == ActionState::Grenade || m_ActionState == ActionState::Melee)
+			ChangeActionState(ActionState::Holding);
 
-		}
-		
 	}
 }
 
 void MasterChiefTorso::SpawnCasing(const StaticTextures& textures)
 {
-	if (m_ShotFired && (GetActiveGun() == GunType::smart || GetActiveGun() == GunType::magnum))
+	if (m_ShotFired && (GetActiveGun() == GunType::SmartRifle || GetActiveGun() == GunType::MagnumPistol))
 	{
 		Point2f startPoint{};
 		if(m_IsFlipped)
@@ -554,49 +472,24 @@ bool MasterChiefTorso::IsShooting()
 
 	if (tempShot)
 	{
-		if (!m_IsSecondaryEquipped)
+		switch (m_IsSecondaryEquipped ? m_SecondSlot : m_FirstSlot)
 		{
-			switch (m_FirstSlot)
-			{
-			case GunType::smart:
-				m_pSmartRifleShot->Play(0);
-				break;
-			case GunType::magnum:
-				m_pMagnumShot->Play(0);
-				break;
-			case GunType::pistol:
-				m_pPlasmaPistolShot->Play(0);
-				break;
-			case GunType::rifle:
-				m_pPlasmaRifleShot->Play(0);
-				break;
-			case GunType::needle:
-				m_pNeedlerShot->Play(0);
-				break;
-			}
+		case GunType::SmartRifle:
+			m_pSmartRifleShot->Play(0);
+			break;
+		case GunType::MagnumPistol:
+			m_pMagnumShot->Play(0);
+			break;
+		case GunType::PlasmaPistol:
+			m_pPlasmaPistolShot->Play(0);
+			break;
+		case GunType::PlasmaRifle:
+			m_pPlasmaRifleShot->Play(0);
+			break;
+		case GunType::Needler:
+			m_pNeedlerShot->Play(0);
+			break;
 		}
-		else
-		{
-			switch (m_SecondSlot)
-			{
-			case GunType::smart:
-				m_pSmartRifleShot->Play(0);
-				break;
-			case GunType::magnum:
-				m_pMagnumShot->Play(0);
-				break;
-			case GunType::pistol:
-				m_pPlasmaPistolShot->Play(0);
-				break;
-			case GunType::rifle:
-				m_pPlasmaRifleShot->Play(0);
-				break;
-			case GunType::needle:
-				m_pNeedlerShot->Play(0);
-				break;
-			}
-		}
-
 	}
 	return tempShot;
 }
@@ -631,79 +524,20 @@ void MasterChiefTorso::ChangeGun(GunType type, int ammo, int reserve)
 
 void MasterChiefTorso::AddReserve(int reserve, GunType type)
 {
-	if (m_FirstSlot == type)
+	bool isPrimary{ m_FirstSlot == type };
+	int& selectedReserve{ isPrimary ? m_PrimaryReserve : m_SecondaryReserve };
+	int& selectedAmmo{ isPrimary ? m_PrimaryAmmo : m_SecondaryAmmo };
+
+	if (type != GunType::PlasmaPistol && type != GunType::PlasmaRifle)
 	{
-		if (m_FirstSlot != GunType::pistol && m_FirstSlot != GunType::rifle)
-		{
-			m_PrimaryReserve += reserve;
-			if (m_PrimaryReserve > 999)
-				m_PrimaryReserve = 999;
-		}
-		else
-		{
-			m_PrimaryAmmo += reserve;
-			if (m_PrimaryAmmo > 100)
-				m_PrimaryAmmo = 100;
-		}
+		selectedReserve += reserve;
+		if (selectedReserve > 999)
+			selectedReserve = 999;
 	}
 	else
 	{
-		if (m_SecondSlot != GunType::pistol && m_SecondSlot != GunType::rifle)
-		{
-			m_SecondaryReserve += reserve;
-			if (m_SecondaryReserve > 999)
-				m_SecondaryReserve = 999;
-		}
-		else
-		{
-			m_SecondaryAmmo += reserve;
-			if (m_SecondaryAmmo > 100)
-				m_SecondaryAmmo = 100;
-		}
+		selectedAmmo += reserve;
+		if (selectedAmmo > 100)
+			selectedAmmo = 100;
 	}
-}
-
-GunType MasterChiefTorso::GetActiveGun() const
-{
-	return (!m_IsSecondaryEquipped) ? m_FirstSlot : m_SecondSlot;
-}
-
-GunType MasterChiefTorso::GetPrimary() const
-{
-	return m_FirstSlot;
-}
-
-GunType MasterChiefTorso::GetSecondary() const
-{
-	return m_SecondSlot;
-}
-
-int MasterChiefTorso::GetAmmo() const
-{
-	return (!m_IsSecondaryEquipped) ? m_PrimaryAmmo : m_SecondaryAmmo;
-}
-
-int MasterChiefTorso::GetReserve() const
-{
-	return (!m_IsSecondaryEquipped) ? m_PrimaryReserve : m_SecondaryReserve;
-}
-
-float MasterChiefTorso::GetAngle() const
-{
-	return m_Angle;
-}
-
-float MasterChiefTorso::GetShield(bool max) const
-{
-	return (max) ? m_MaxShield : m_Shield;
-}
-
-float MasterChiefTorso::GetHealth(bool max) const
-{
-	return (max) ? m_MaxHealth : m_Health;
-}
-
-bool MasterChiefTorso::IsDead() const
-{
-	return m_Dead;
 }

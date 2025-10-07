@@ -399,23 +399,23 @@ void Game::LoadElements(std::string fileLocation)
 			GunPickup* pPickup{};
 			if (gunType == "smart")
 			{
-				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::smart);
+				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::SmartRifle);
 			}
 			else if (gunType == "magnum")
 			{
-				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::magnum);
+				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::MagnumPistol);
 			}
 			else if (gunType == "pistol")
 			{
-				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::pistol);
+				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::PlasmaPistol);
 			}
 			else if (gunType == "rifle")
 			{
-				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::rifle);
+				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::PlasmaRifle);
 			}
 			else if (gunType == "needle")
 			{
-				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::needle);
+				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::Needler);
 			}
 			else
 			{
@@ -626,13 +626,13 @@ void Game::HandleEnemyDrop()
 			switch (m_pEnemyArr[i]->GetWeapon())
 			{
 			case EnemyGunType::pistol:
-				m_pGunArr.push_back(new GunPickup{ m_Textures, m_pEnemyArr[i]->GetDropPoint(), GunType::pistol });
+				m_pGunArr.push_back(new GunPickup{ m_Textures, m_pEnemyArr[i]->GetDropPoint(), GunType::PlasmaPistol });
 				break;
 			case EnemyGunType::rifle:
-				m_pGunArr.push_back(new GunPickup{ m_Textures, m_pEnemyArr[i]->GetDropPoint(), GunType::rifle });
+				m_pGunArr.push_back(new GunPickup{ m_Textures, m_pEnemyArr[i]->GetDropPoint(), GunType::PlasmaRifle });
 				break;
 			case EnemyGunType::needle:
-				m_pGunArr.push_back(new GunPickup{ m_Textures, m_pEnemyArr[i]->GetDropPoint(), GunType::needle });
+				m_pGunArr.push_back(new GunPickup{ m_Textures, m_pEnemyArr[i]->GetDropPoint(), GunType::Needler });
 				break;
 			default:
 				break;

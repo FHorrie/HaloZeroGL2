@@ -17,29 +17,29 @@ Projectile::Projectile(const StaticTextures& textures, const Point2f& startLocat
 {
 	switch (type)
 	{
-	case GunType::smart:
+	case GunType::SmartRifle:
 		m_DrawBullet = false;
 		m_BulletSpeed = 1500.f;
 		m_Damage = 8;
 		break;
-	case GunType::magnum:
+	case GunType::MagnumPistol:
 		m_DrawBullet = false;
 		m_BulletSpeed = 1500.f;
 		m_Damage = 12;
 		break;
-	case GunType::pistol:
+	case GunType::PlasmaPistol:
 		m_BulletType = 0;
 		m_DrawBullet = true;
 		m_BulletSpeed = 700.f;
 		m_Damage = 8;
 		break;
-	case GunType::rifle:
+	case GunType::PlasmaRifle:
 		m_BulletType = 1;
 		m_DrawBullet = true;
 		m_BulletSpeed = 700.f;
 		m_Damage = 10;
 		break;
-	case GunType::needle:
+	case GunType::Needler:
 		m_BulletType = 2;
 		m_DrawBullet = true;
 		m_BulletSpeed = 650.f;
