@@ -4,7 +4,7 @@
 //-----------------------------------------------------------------
 // Window Constructors
 //-----------------------------------------------------------------
-Window::Window( const std::string& title , float width , float height , bool isVSyncOn )
+Window::Window(const std::string& title, float width, float height, bool isVSyncOn)
 	:title{ title }
 	,width{ width }
 	,height{ height }
@@ -64,14 +64,14 @@ Circlef::Circlef( )
 {
 }
 
-Circlef::Circlef( float centerX, float centerY, float radius )
-	:Circlef{ Point2f{ centerX, centerY }, radius }
-{
-}
-
 Circlef::Circlef( const Point2f& center, float radius )
 	:center{ center }
 	,radius{ radius }
+{
+}
+
+Circlef::Circlef( float centerX, float centerY, float radius )
+	:Circlef{ Point2f{ centerX, centerY }, radius }
 {
 }
 

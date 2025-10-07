@@ -16,36 +16,15 @@ public:
 
 	void Run( );
 
-	virtual void Update(float elapsedSec)
-	{
-		
-	}
-	virtual void Draw() const
-	{
-		
-	}
+	virtual void Update(float elapsedSec) {}
+	virtual void Draw() const {}
 
 	// Event handling
-	virtual void ProcessKeyDownEvent(const SDL_KeyboardEvent& e)
-	{
-		
-	}
-	virtual void ProcessKeyUpEvent(const SDL_KeyboardEvent& e)
-	{
-		
-	}
-	virtual void ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e)
-	{
-		
-	}
-	virtual void ProcessMouseDownEvent(const SDL_MouseButtonEvent& e)
-	{
-		
-	}
-	virtual void ProcessMouseUpEvent(const SDL_MouseButtonEvent& e)
-	{
-		
-	}
+	virtual void ProcessKeyDownEvent(const SDL_KeyboardEvent& e) {}
+	virtual void ProcessKeyUpEvent(const SDL_KeyboardEvent& e) {}
+	virtual void ProcessMouseMotionEvent(const SDL_MouseMotionEvent& e)	{}
+	virtual void ProcessMouseDownEvent(const SDL_MouseButtonEvent& e) {}
+	virtual void ProcessMouseUpEvent(const SDL_MouseButtonEvent& e) {}
 
 	const Rectf& GetViewPort() const
 	{
@@ -58,13 +37,13 @@ private:
 	const Window m_Window;
 	const Rectf m_Viewport;
 	// The window we render to
-	SDL_Window* m_pWindow;
+	SDL_Window* m_WindowPtr;
 	// OpenGL context
-	SDL_GLContext m_pContext;
+	SDL_GLContext m_GLContext;
 	// Init info
-	bool m_Initialized;
+	bool m_Initialized{ false };
 	// Prevent timing jumps when debugging
-	const float m_MaxElapsedSeconds;
+	const float m_MaxElapsedSeconds{ 0.1f };
 	
 	// FUNCTIONS
 	void InitializeGameEngine( );

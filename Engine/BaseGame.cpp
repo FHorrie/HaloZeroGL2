@@ -4,13 +4,13 @@
 #include <chrono>
 #include "BaseGame.h"
 
+#include <memory>
+
 BaseGame::BaseGame(const Window& window)
 	: m_Window{ window }
-	, m_Viewport{ 0,0,window.width,window.height }
-	, m_pWindow{ nullptr }
-	, m_pContext{ nullptr }
-	, m_Initialized{ false }
-	, m_MaxElapsedSeconds{ 0.1f }
+	, m_Viewport{ 0, 0, window.width, window.height }
+	, m_WindowPtr{ nullptr }
+	, m_GLContext{ nullptr }
 {
 	InitializeGameEngine();
 }
@@ -41,22 +41,22 @@ void BaseGame::InitializeGameEngine()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 	// Create window
-	m_pWindow = SDL_CreateWindow(
+	m_WindowPtr = SDL_CreateWindow(
 		m_Window.title.c_str(),
 		SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED,
-		int(m_Window.width),
-		int(m_Window.height),
+		static_cast<int>(m_Window.width),
+		static_cast<int>(m_Window.height),
 		SDL_WINDOW_OPENGL);
-	if (m_pWindow == nullptr)
+	if (m_WindowPtr == nullptr)
 	{
 		std::cerr << "BaseGame::Initialize( ), error when calling SDL_CreateWindow: " << SDL_GetError() << std::endl;
 		return;
 	}
 
 	// Create OpenGL context 
-	m_pContext = SDL_GL_CreateContext(m_pWindow);
-	if (m_pContext == nullptr)
+	m_GLContext = SDL_GL_CreateContext(m_WindowPtr);
+	if (m_GLContext == nullptr)
 	{
 		std::cerr << "BaseGame::Initialize( ), error when calling SDL_GL_CreateContext: " << SDL_GetError() << std::endl;
 		return;
@@ -91,6 +91,7 @@ void BaseGame::InitializeGameEngine()
 	// Set the Modelview matrix to the identity matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
 
 	// Enable color blending and use alpha blending
 	glEnable(GL_BLEND);
@@ -195,17 +196,17 @@ void BaseGame::Run()
 			this->Draw();
 
 			// Update screen: swap back and front buffer
-			SDL_GL_SwapWindow(m_pWindow);
+			SDL_GL_SwapWindow(m_WindowPtr);
 		}
 	}
 }
 
 void BaseGame::CleanupGameEngine()
 {
-	SDL_GL_DeleteContext(m_pContext);
+	SDL_GL_DeleteContext(m_GLContext);
 
-	SDL_DestroyWindow(m_pWindow);
-	m_pWindow = nullptr;
+	SDL_DestroyWindow(m_WindowPtr);
+	m_WindowPtr = nullptr;
 
 	//Quit SDL subsystems
 	Mix_Quit();
