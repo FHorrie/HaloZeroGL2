@@ -12,7 +12,7 @@ int SDL_main(int argv, char** args)
 
 	StartHeapControl();
 
-	Game* pGame{ new Game{ Window{"Halo Zero (Finals) - Horrie, Finian - 1GD11E", 600.f , 400.f } } };
+	Game* pGame{ new Game{ Window{"Halo Zero (Finals) - Horrie, Finian - 1GD11E", 600.f , 400.f} } };
 	pGame->Run();
 	delete pGame;
 
