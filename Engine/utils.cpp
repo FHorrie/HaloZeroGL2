@@ -530,6 +530,12 @@ bool utils::IntersectLineSegments( const Point2f& p1, const Point2f& p2, const P
 	return intersecting;
 }
 
+bool utils::Raycast(const std::vector<Point2f>& vertices, const Point2f& rayP1, const Point2f& rayP2)
+{
+	HitInfo i;
+	return Raycast(vertices.data(), vertices.size(), rayP1, rayP2, i);
+}
+
 bool utils::Raycast( const std::vector<Point2f>& vertices, const Point2f& rayP1, const Point2f& rayP2, HitInfo& hitInfo )
 {
 	return Raycast( vertices.data( ), vertices.size( ), rayP1, rayP2, hitInfo );
