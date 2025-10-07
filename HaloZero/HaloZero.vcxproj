@@ -186,6 +186,7 @@ xcopy "$(SolutionDir)Resources\*.*" "$(TargetDir)" /y /d /s</Command>
     <ClInclude Include="AnimatedSprite.h" />
     <ClInclude Include="CasingSprite.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="EliteRifle.h" />
     <ClInclude Include="EnemyBase.h" />
     <ClInclude Include="Game.h" />

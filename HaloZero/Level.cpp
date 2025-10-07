@@ -2,6 +2,7 @@
 #include "Level.h"
 #include "Texture.h"
 #include "svgparser.h"
+#include "Constants.h"
 #include <iostream>
 
 Level::Level() 
@@ -41,75 +42,60 @@ void Level::DrawForeground() const
 void Level::HandleCollision(Rectf& actor, Vector2f& actorVelocity) const
 {
 	utils::SetColor(Color4f{ 0.f, 0.f, 1.f, 1.f });
-	Point2f actorP1{ actor.left + actor.width / 2 , actor.bottom + actor.height };
-	Point2f actorP2{ actor.left + actor.width / 2 , actor.bottom };
-	Point2f actorP3{ actor.left , actor.bottom + actor.height / 6 };
-	Point2f actorP4{ actor.left + actor.width/2 , actor.bottom + actor.height / 6 };
-	Point2f actorP5{ actor.left + actor.width , actor.bottom + actor.height / 6 };
-	utils::HitInfo hitInfo1{};
-	utils::HitInfo hitInfo2{};
-	utils::HitInfo hitInfo3{};
-	if (utils::Raycast(m_Vertices[0], actorP1, actorP2, hitInfo1))
+
+	Point2f actorCenterTop{ actor.left + actor.width / 2 , actor.bottom + actor.height };
+	Point2f actorCenterBottom{ actor.left + actor.width / 2 , actor.bottom };
+
+	Point2f actorCenterOffsetBottom{ actor.left + actor.width / 2 , actor.bottom + Constants::Epsilon };
+	Point2f actorLeftBottom{ actor.left , actor.bottom + Constants::Epsilon };
+	Point2f actorRightBottom{ actor.left + actor.width , actor.bottom + Constants::Epsilon };
+
+	utils::HitInfo hitInfo{};
+
+	if (utils::Raycast(m_Vertices[0], actorCenterTop, actorCenterBottom, hitInfo)
+		&& IsOnGround(actor, actorVelocity))
 	{
-		if (IsOnGround(actor, actorVelocity))
-		{
-			actor.bottom = hitInfo1.intersectPoint.y;
-			actorVelocity.y = 0;
-		}
+		actor.bottom = hitInfo.intersectPoint.y;
+		actorVelocity.y = 0;
 	}
-	if (utils::Raycast(m_Vertices[0], actorP3, actorP4, hitInfo2))
+
+	if (utils::Raycast(m_Vertices[0], actorLeftBottom, actorCenterOffsetBottom, hitInfo))
 	{
 		if (IsHittingWallLeft(actor, actorVelocity))
 		{
-			actor.left = hitInfo2.intersectPoint.x;
-			//actorVelocity.x = 0;
+			actor.left = hitInfo.intersectPoint.x;
 		}
-		return;
 	}
-	if (utils::Raycast(m_Vertices[0], actorP4, actorP5, hitInfo3))
+	else if (utils::Raycast(m_Vertices[0], actorRightBottom, actorCenterOffsetBottom, hitInfo))
 	{
 		if (IsHittingWallRight(actor, actorVelocity))
 		{
-			actor.left = hitInfo3.intersectPoint.x - actor.width;
-			//actorVelocity.x = 0;
+			actor.left = hitInfo.intersectPoint.x - actor.width;
 		}
-		return;
 	}
-	
 }
 
 bool Level::IsOnGround(const Rectf& actorShape, const Vector2f& actorVelocity) const
 {
-	Point2f actorP1{ actorShape.left + actorShape.width / 2 , actorShape.bottom + actorShape.height};
-	Point2f actorP2{ actorShape.left + actorShape.width / 2 , actorShape.bottom - 1 };
+	Point2f actorCenterTop{ actorShape.left + actorShape.width / 2 , actorShape.bottom + actorShape.height};
+	Point2f actorCenterBottom{ actorShape.left + actorShape.width / 2 , actorShape.bottom - 1};
 	utils::HitInfo hitInfo{};
 
-	return (utils::Raycast(m_Vertices[0], actorP1, actorP2, hitInfo)) ? true : false;
+	return utils::Raycast(m_Vertices[0], actorCenterTop, actorCenterBottom);
 }
 
 bool Level::IsHittingWallLeft(const Rectf& actorShape, const Vector2f& actorVelocity) const
 {
-	Point2f actorP3{ actorShape.left , actorShape.bottom + actorShape.height / 6 };
-	Point2f actorP4{ actorShape.left + actorShape.width / 2 , actorShape.bottom + actorShape.height / 6 };
-	utils::HitInfo hitInfo{};
-	if (utils::Raycast(m_Vertices[0], actorP3, actorP4, hitInfo))
-	{
-		//std::cout << hitInfo.intersectPoint.x << "\n";
-		return true;
-	}
-	else
-		return false;
+	Point2f actorLeftBottom{ actorShape.left, actorShape.bottom + actorShape.height / 2 };
+	Point2f actorCenterBottom{ actorShape.left + actorShape.width / 2, actorShape.bottom + Constants::Epsilon };
+	return utils::Raycast(m_Vertices[0], actorLeftBottom, actorCenterBottom);
 }
 
 bool Level::IsHittingWallRight(const Rectf& actorShape, const Vector2f& actorVelocity) const
 {
-	Point2f actorP4{ actorShape.left + actorShape.width / 2 , actorShape.bottom + actorShape.height / 6 };
-	Point2f actorP5{ actorShape.left + actorShape.width , actorShape.bottom + actorShape.height / 6 };
-	utils::HitInfo hitInfo{};
-	if (utils::Raycast(m_Vertices[0], actorP4, actorP5, hitInfo))
-		return true;
-	else
-		return false;
+	Point2f actorRightBottom{ actorShape.left + actorShape.width , actorShape.bottom + actorShape.height / 2 };
+	Point2f actorCenterBottom{ actorShape.left + actorShape.width / 2 , actorShape.bottom + Constants::Epsilon };
+	return utils::Raycast(m_Vertices[0], actorCenterBottom, actorRightBottom);
 }
 
 Rectf Level::GetBoundaries() const
@@ -119,7 +105,5 @@ Rectf Level::GetBoundaries() const
 
 bool Level::HasReachedEnd(const Rectf& actorShape) const
 {
-	if (utils::IsOverlapping(actorShape, m_EndShape))
-		return true;
-	else return false;
+	return utils::IsOverlapping(actorShape, m_EndShape);
 }

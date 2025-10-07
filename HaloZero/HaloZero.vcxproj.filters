@@ -82,6 +82,9 @@
     <Filter Include="Game Files\Sprites\Screens">
       <UniqueIdentifier>{10eacf36-58a8-48ab-951c-b4df9e154e3e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game Files\Constants">
+      <UniqueIdentifier>{f88230e3-3331-48c6-b00f-bb9c3a6fbec0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -229,6 +232,9 @@
     </ClInclude>
     <ClInclude Include="SoundManager.h">
       <Filter>Game Files\SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Game Files\Constants</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
