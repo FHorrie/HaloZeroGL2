@@ -51,6 +51,9 @@ void Game::Initialize( )
 
 	//Start Music
 	PlayLevelBGM();
+
+	//Disable the DAMN CURSOR
+	SDL_ShowCursor(false);
 }
 
 void Game::Cleanup( )
@@ -92,8 +95,6 @@ void Game::ReInit()
 
 void Game::Update( float elapsedSec )
 {
-	SetCursor(FALSE);
-
 	if (!m_GameEnd)
 	{
 		m_pPlayerBottom->SetFlipped(m_pPlayerTop->GetFlipped());
