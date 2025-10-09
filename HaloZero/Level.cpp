@@ -46,6 +46,7 @@ void Level::HandleCollision(Rectf& actor, Vector2f& actorVelocity) const
 	Point2f actorCenterTop{ actor.left + actor.width / 2 , actor.bottom + actor.height };
 	Point2f actorCenterBottom{ actor.left + actor.width / 2 , actor.bottom };
 
+	// Add a small value to prevent false positives from the floor
 	Point2f actorCenterOffsetBottom{ actor.left + actor.width / 2 , actor.bottom + Constants::Epsilon };
 	Point2f actorLeftBottom{ actor.left , actor.bottom + Constants::Epsilon };
 	Point2f actorRightBottom{ actor.left + actor.width , actor.bottom + Constants::Epsilon };
@@ -86,6 +87,7 @@ bool Level::IsOnGround(const Rectf& actorShape, const Vector2f& actorVelocity) c
 
 bool Level::IsHittingWallLeft(const Rectf& actorShape, const Vector2f& actorVelocity) const
 {
+	// Raycast in a diagonal manner to prevent slight slope snapping
 	Point2f actorLeftBottom{ actorShape.left, actorShape.bottom + actorShape.height / 2 };
 	Point2f actorCenterBottom{ actorShape.left + actorShape.width / 2, actorShape.bottom + Constants::Epsilon };
 	return utils::Raycast(m_Vertices[0], actorLeftBottom, actorCenterBottom);
@@ -93,6 +95,7 @@ bool Level::IsHittingWallLeft(const Rectf& actorShape, const Vector2f& actorVelo
 
 bool Level::IsHittingWallRight(const Rectf& actorShape, const Vector2f& actorVelocity) const
 {
+	// Raycast in a diagonal manner to prevent slight slope snapping
 	Point2f actorRightBottom{ actorShape.left + actorShape.width , actorShape.bottom + actorShape.height / 2 };
 	Point2f actorCenterBottom{ actorShape.left + actorShape.width / 2 , actorShape.bottom + Constants::Epsilon };
 	return utils::Raycast(m_Vertices[0], actorCenterBottom, actorRightBottom);

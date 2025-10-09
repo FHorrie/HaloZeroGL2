@@ -75,20 +75,21 @@ private:
 
 	void HandleEnemyDrop();
 
-	StaticTextures			m_Textures;
-	SoundManager			m_Sounds;
+	// VARIABLES
+	StaticTextures m_Textures{};
+	SoundManager m_Sounds{};
 
-	Screen					m_ControlsScreen;
-	Screen					m_EndScreen;
-	Screen					m_DeathScreen;
+	Screen m_ControlsScreen;
+	Screen m_EndScreen;
+	Screen m_DeathScreen;
 
-	MasterChiefLegs*		m_pPlayerBottom;
-	MasterChiefTorso*		m_pPlayerTop;
-	EnvironmentSprite*		m_pPlayerDeath;
+	MasterChiefLegs* m_pPlayerBottom{};
+	MasterChiefTorso* m_pPlayerTop{};
+	EnvironmentSprite* m_pPlayerDeath{};
 
-	Level					m_Level;
-	Camera					m_Camera;
-	HUD						m_HUD;
+	Level m_Level;
+	Camera m_Camera;
+	HUD m_HUD;
 
 	std::vector<EnemyBase*>	m_pEnemyArr;
 
@@ -97,16 +98,17 @@ private:
 	std::vector<Projectile*> m_pPlayerProjectileArr;
 	std::vector<Projectile*> m_pEnemyProjectileArr;
 
-	bool					m_PickedUp = false;
-	bool					m_ButtonPressed = false;
-
-	bool					m_DisplayControls = false;
-	bool					m_GameEnd = false;
-	bool					m_GameDead = false;
-	bool					m_FadeOut = false;
-	float					m_EndAlpha;
+	bool m_PickedUp{};
+	bool m_ButtonPressed{};
+		 
+	bool m_DisplayControls{};
+	bool m_GameEnd{};
+	bool m_GameDead{};
+	bool m_FadeOut{};
+	float m_EndAlpha{};
 
 	//SoundStream*			m_pBGM;
 	//SoundStream*			m_pEndMusic;
 
+	const std::string m_GameInfoText{ "\n-- Halo Zero Controls --\nLMB = Shoot\nRMB = Melee\nA, D = Move\nS = Crouch\nSpacebar = Jump\n1, 2 = Switch Weapons\nLSHIFT = Pick Up Weapon\nG = Grenade\n\n" };
 };

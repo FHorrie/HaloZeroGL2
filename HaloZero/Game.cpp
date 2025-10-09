@@ -19,8 +19,6 @@
 
 Game::Game(const Window& window)
 	: BaseGame{ window }
-	, m_Textures{}
-	, m_Sounds{}
 	, m_ControlsScreen{"Controls", m_Textures}
 	, m_EndScreen{"EndScreen", m_Textures}
 	, m_DeathScreen{"DeathScreen", m_Textures}
@@ -30,7 +28,6 @@ Game::Game(const Window& window)
 	, m_Level{}
 	, m_Camera{ GetViewPort().width, GetViewPort().height }
 	, m_HUD{ m_Textures, GetViewPort(), m_pPlayerTop->GetShield(true), m_pPlayerTop->GetHealth(true)}
-	, m_EndAlpha{}
 {
 	
 	Initialize();
@@ -298,13 +295,13 @@ void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 
 void Game::ClearBackground( ) const
 {
-	glClearColor( 0.0f, 0.0f, 0.3f, 1.0f );
+	glClearColor( 0.1f, 0.1f, 0.3f, 1.0f );
 	glClear( GL_COLOR_BUFFER_BIT );
 }
 
 void Game::PrintControls() const
 {
-	std::cout << "\n-- Halo Zero Controls --\n" << "LMB = Shoot\n" << "RMB = Melee\n" << "A, D = Move\n" << "S = Crouch\n" << "Spacebar = Jump\n" << "1, 2 = Switch Weapons\n" << "LSHIFT = Pick Up Weapon\n" << "G = Grenade\n\n";
+	std::cout << m_GameInfoText;
 }
 
 void Game::SetCamera()

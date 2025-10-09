@@ -3,11 +3,7 @@
 
 MasterChiefBase::MasterChiefBase(const std::string& spriteType, const StaticTextures& textures, const Point2f& startLocation, unsigned short framerate, unsigned short rows, unsigned short cols)
 	:AnimatedSprite(spriteType, textures, startLocation, 0, framerate, rows, cols),
-	m_HitBox{startLocation.x, startLocation.y, 70, 104 },
-	m_Velocity{ 0, 0 },
-	m_Acceleration{ 0, -1200 },
-	m_MoveSpeed{300},
-	m_JumpSpeed{600}
+	m_HitBox{startLocation.x, startLocation.y, 70, 104 }
 
 {
 }
@@ -60,16 +56,14 @@ void MasterChiefBase::UpdatePosition(float elapsedSec, const Level& level)
 			m_Velocity = Vector2f{ 0.f, 0.f };
 			break;
 		case MoveState::RunningCrouch:
-			m_Velocity.x = m_MoveSpeed / 2.f;
+			m_Velocity.x = m_CrouchMoveSpeed;
 			break;
 		default:
 			break;
 		}
 	}
-	if (m_IsFlipped == false)
-		m_IsBackwards == false ? m_HitBox.left += m_Velocity.x * elapsedSec : m_HitBox.left -= m_Velocity.x * elapsedSec;
-	else
-		m_IsBackwards ? m_HitBox.left += m_Velocity.x * elapsedSec : m_HitBox.left -= m_Velocity.x * elapsedSec;
+
+	m_IsBackwards == m_IsFlipped ? m_HitBox.left += m_Velocity.x *  elapsedSec : m_HitBox.left -= m_Velocity.x * elapsedSec;
 	
 	m_HitBox.bottom += m_Velocity.y * elapsedSec;
 

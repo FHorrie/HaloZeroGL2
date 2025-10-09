@@ -31,7 +31,8 @@ enum class GunType
 class MasterChiefBase : public AnimatedSprite
 {
 public:
-	MasterChiefBase(const std::string& spriteType, const StaticTextures& textures, const Point2f& startLocation, unsigned short framerate, unsigned short rows, unsigned short cols);
+	MasterChiefBase(const std::string& spriteType, const StaticTextures& textures, 
+		const Point2f& startLocation, unsigned short framerate, unsigned short rows, unsigned short cols);
 	virtual ~MasterChiefBase() = default;
 
 	virtual void Draw() const override = 0;
@@ -41,8 +42,8 @@ public:
 	Point2f GetDropPoint() const;
 
 protected:
-	Vector2f m_Acceleration;
-	Vector2f m_Velocity;
+	Vector2f m_Acceleration{ 0, -1200 };
+	Vector2f m_Velocity{ 0, 0 };
 
 	Rectf m_HitBox;
 
@@ -50,8 +51,9 @@ protected:
 	ActionState m_ActionState{ ActionState::Holding };
 
 	float m_JumpBuffer{};
-	const float m_MoveSpeed;
-	const float m_JumpSpeed;
+	const float m_MoveSpeed{ 300 };
+	const float m_CrouchMoveSpeed{ 200 };
+	const float m_JumpSpeed{ 600 };
 
 	bool m_IsFlipped{ false };
 	bool m_IsBackwards{ false };
