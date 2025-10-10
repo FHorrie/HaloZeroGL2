@@ -16,7 +16,8 @@ SoundManager::SoundManager()
 	LoadSound("PlasmaRifleShot", "Sounds/SoundFX/GunSounds/PlasmaRifleShot.ogg", true);
 	LoadSound("NeedlerShot", "Sounds/SoundFX/GunSounds/NeedlerShot.ogg", true);
 	LoadSound("HunterShot", "Sounds/SoundFX/GunSounds/HunterShot.ogg", true);
-
+	LoadSound("ReloadDone", "Sounds/SoundFX/GunSounds/ReloadDone.ogg", true);
+	
 	LoadSound("ImpDeath", "Sounds/SoundFX/Covenant/ImpDeath.ogg", true);
 	LoadSound("EliteDeath", "Sounds/SoundFX/Covenant/EliteDeath.ogg", true);
 	LoadSound("JackalDeath", "Sounds/SoundFX/Covenant/JackalDeath.ogg", true);
@@ -40,7 +41,9 @@ const SoundStream* SoundManager::GetSoundStream(const std::string& key) const
 	auto streamIt = m_pSoundStreamMap.find(key);
 
 	if (streamIt != m_pSoundStreamMap.cend())
+	{
 		return streamIt->second.get();
+	}
 	else
 	{
 		std::cout << "Provided string doesn't match any soundstream\nNo soundstream was loaded\n\n";
@@ -53,7 +56,9 @@ const SoundEffect* SoundManager::GetSoundEffect(const std::string& key) const
 	auto effectIt = m_pSoundEffectMap.find(key);
 
 	if (effectIt != m_pSoundEffectMap.cend())
+	{
 		return effectIt->second.get();
+	}
 	else
 	{
 		std::cout << "Provided string doesn't match any soundeffect\nNo soundeffect was loaded\n\n";

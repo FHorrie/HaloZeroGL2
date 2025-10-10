@@ -18,6 +18,7 @@ MasterChiefTorso::MasterChiefTorso(const StaticTextures& textures, const SoundMa
 	, m_pPlasmaRifleShot{ sounds.GetSoundEffect("PlasmaRifleShot") }
 	, m_pNeedlerShot{ sounds.GetSoundEffect("NeedlerShot") }
 	, m_pMeleeSound{ sounds.GetSoundEffect("Melee")}
+	, m_pReloadSound{ sounds.GetSoundEffect("ReloadDone")}
 
 	, m_pShieldBeep{ sounds.GetSoundEffect("ShieldBeep") }
 	, m_pShieldRecharge{ sounds.GetSoundEffect("ShieldRecharge")}
@@ -189,7 +190,7 @@ void MasterChiefTorso::HandleRegen(float elapsedSec)
 		if (m_ShieldBeepTime >= 0.2f)
 		{
 			m_pShieldBeep->Play(0);
-			m_ShieldBeepTime -= 0.2f;
+			m_ShieldBeepTime = 0.f;
 		}
 	}
 	else if (m_Shield < m_MaxShield)
@@ -245,6 +246,7 @@ void MasterChiefTorso::HandleAmmo(float elapsedSec)
 				m_PrimaryReserve -= magSize;
 				//std::cout << "RELOADING, Primary reserve ammo: " << m_PrimaryReserve << "\n";
 			}
+			m_pReloadSound->Play(0);
 			m_PrimaryReloadTime = 0;
 		}
 	}
@@ -268,6 +270,7 @@ void MasterChiefTorso::HandleAmmo(float elapsedSec)
 				m_SecondaryReserve -= magSize;
 				//std::cout << "RELOADING, Secondary Reserve Ammo: " << m_SecondaryReserve << "\n";
 			}
+			m_pReloadSound->Play(0);
 			m_SecondaryReloadTime = 0;
 		}
 	}

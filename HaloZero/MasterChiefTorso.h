@@ -82,6 +82,7 @@ private:
 	const SoundEffect* m_pPlasmaRifleShot{};
 	const SoundEffect* m_pNeedlerShot{};
 	const SoundEffect* m_pMeleeSound{};
+	const SoundEffect* m_pReloadSound{};
 
 	float m_ShieldBeepTime{};
 	bool m_RechargePlayed{ false };
