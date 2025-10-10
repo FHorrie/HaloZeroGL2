@@ -3,8 +3,6 @@
 #include <iostream>
 
 SoundManager::SoundManager()
-	: m_pSoundStreamMap{}
-	, m_pSoundEffectMap{}
 {
 	LoadSound("Level1", "Sounds/Music/level1.ogg", false);
 	LoadSound("GameDead", "Sounds/Music/gamedead.ogg", false);
@@ -30,17 +28,21 @@ SoundManager::SoundManager()
 
 void SoundManager::LoadSound(const std::string& key, const std::string& path, bool effect)
 {
-	if (!effect)
-		m_pSoundStreamMap.insert({ key, std::make_unique<SoundStream>(path) });
+	if (effect)
+	{
+		m_SoundEffectMapPtr.insert({ key, std::make_unique<SoundEffect>(path) });
+	}
 	else
-		m_pSoundEffectMap.insert({ key, std::make_unique<SoundEffect>(path) });
+	{
+		m_SoundStreamMapPtr.insert({ key, std::make_unique<SoundStream>(path) });
+	}
 }
 
 const SoundStream* SoundManager::GetSoundStream(const std::string& key) const
 {
-	auto streamIt = m_pSoundStreamMap.find(key);
+	auto streamIt = m_SoundStreamMapPtr.find(key);
 
-	if (streamIt != m_pSoundStreamMap.cend())
+	if (streamIt != m_SoundStreamMapPtr.cend())
 	{
 		return streamIt->second.get();
 	}
@@ -53,9 +55,9 @@ const SoundStream* SoundManager::GetSoundStream(const std::string& key) const
 
 const SoundEffect* SoundManager::GetSoundEffect(const std::string& key) const
 {
-	auto effectIt = m_pSoundEffectMap.find(key);
+	auto effectIt = m_SoundEffectMapPtr.find(key);
 
-	if (effectIt != m_pSoundEffectMap.cend())
+	if (effectIt != m_SoundEffectMapPtr.cend())
 	{
 		return effectIt->second.get();
 	}

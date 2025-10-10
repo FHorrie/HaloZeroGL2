@@ -18,8 +18,8 @@ public:
 	const SoundEffect* GetSoundEffect(const std::string& key) const;
 
 private:
-	std::unordered_map<std::string, std::unique_ptr<SoundStream>> m_pSoundStreamMap;
-	std::unordered_map<std::string, std::unique_ptr<SoundEffect>> m_pSoundEffectMap;
+	std::unordered_map<std::string, std::unique_ptr<SoundStream>> m_SoundStreamMapPtr{};
+	std::unordered_map<std::string, std::unique_ptr<SoundEffect>> m_SoundEffectMapPtr{};
 
 	void LoadSound(const std::string& key, const std::string& path, bool effect);
 };
