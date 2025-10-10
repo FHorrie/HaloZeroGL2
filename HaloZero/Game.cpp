@@ -67,9 +67,7 @@ void Game::Cleanup( )
 
 void Game::ReInit()
 {
-	m_Sounds.GetSoundStream("Level1")->Stop();
-	m_Sounds.GetSoundStream("GameWin")->Stop();
-	m_Sounds.GetSoundStream("GameDead")->Stop();
+	SoundStream::Stop();
 
 	Cleanup();
 

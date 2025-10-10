@@ -68,8 +68,6 @@ void MasterChiefBase::UpdatePosition(float elapsedSec, const Level& level)
 	m_HitBox.bottom += m_Velocity.y * elapsedSec;
 
 	level.HandleCollision(m_HitBox, m_Velocity);
-	
-	
 }
 
 Rectf MasterChiefBase::GetShape() const
