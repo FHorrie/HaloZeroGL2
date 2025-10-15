@@ -16,9 +16,9 @@ public:
 	Point2f CameraPos(const Rectf& target) const;
 	
 private:
-	const float m_Width;
-	const float m_Height;
-	Rectf m_LevelBoundaries;
+	const float m_Width{ 360 };
+	const float m_Height{ 240 };
+	Rectf m_LevelBoundaries{};
 
 	Point2f Track(const Rectf& target) const;
 	void Clamp(Point2f& bottomLeftPos) const;

@@ -3,17 +3,13 @@
 #include "Level.h"
 
 Camera::Camera()
-	:m_Width{360},
-	m_Height{240},
-	m_LevelBoundaries{}
-	
 {
+
 }
 
 Camera::Camera(float width, float height)
 	:m_Width{ width },
-	m_Height{ height },
-	m_LevelBoundaries{}
+	m_Height{ height }
 {
 }
 

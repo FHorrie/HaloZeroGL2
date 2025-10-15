@@ -39,3 +39,9 @@ void AnimatedSprite::Update(float elapsedSec)
 		else (m_CurrentFrame < m_nFrames) ? m_CurrentFrame++ : m_CurrentFrame = m_nFrames;
 	}
 }
+
+void AnimatedSprite::Reset()
+{
+	m_CurrentFrame = 0;
+	m_AccuTime = 0;
+}

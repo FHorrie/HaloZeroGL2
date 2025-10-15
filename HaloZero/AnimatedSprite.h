@@ -10,6 +10,8 @@ public:
 	virtual void Draw() const override;
 	void Update(float elapsedSec);
 
+	void Reset();
+
 protected:
 	unsigned short m_nFrames;
 	unsigned short m_Framerate;

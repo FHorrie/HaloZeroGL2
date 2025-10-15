@@ -22,12 +22,11 @@ Game::Game(const Window& window)
 	, m_ControlsScreen{"Controls", m_Textures}
 	, m_EndScreen{"EndScreen", m_Textures}
 	, m_DeathScreen{"DeathScreen", m_Textures}
-	, m_pPlayerBottom{ new MasterChiefLegs(m_Textures, Point2f(360, 440), 12) } //360, 11000
-	, m_pPlayerTop{ new MasterChiefTorso(m_Textures, m_Sounds, Point2f(360, 440), 12, GetViewPort()) }
-	, m_pPlayerDeath{ new EnvironmentSprite{"MasterChiefDeath", m_Textures, Point2f{}, 2, 4, 1, 3, false} }
+	, m_PlayerPtr{ std::make_unique<MasterChiefBase>(m_Textures, m_Sounds, GetViewPort(), Point2f(360, 440)) } //360, 11000
+	, m_pPlayerDeath{ std::make_unique<EnvironmentSprite>("MasterChiefDeath", m_Textures, Point2f{}, 2, 4, 1, 3, false) }
 	, m_Level{}
 	, m_Camera{ GetViewPort().width, GetViewPort().height }
-	, m_HUD{ m_Textures, GetViewPort(), m_pPlayerTop->GetShield(true), m_pPlayerTop->GetHealth(true)}
+	, m_HUD{ m_Textures, GetViewPort(), m_PlayerPtr->GetShield(true), m_PlayerPtr->GetHealth(true) }
 {
 	
 	Initialize();
@@ -35,7 +34,6 @@ Game::Game(const Window& window)
 
 Game::~Game( )
 {
-	delete m_pPlayerDeath;
 	Cleanup();
 }
 
@@ -43,13 +41,13 @@ void Game::Initialize( )
 {
 	SetCamera();
 
-	//InitEnemies();
+	//Initialize enemies
 	LoadElements("Covenant/EnemySpawn.csv");
 	 
-	//InitGunDrops();
+	//Initialize pick ups
 	LoadElements("Weapons/PickupSpawn.csv");
 
-	//Start Music
+	//Start music
 	PlayLevelBGM();
 
 	//Disable the DAMN CURSOR
@@ -58,8 +56,6 @@ void Game::Initialize( )
 
 void Game::Cleanup( )
 {
-	delete m_pPlayerTop;
-	delete m_pPlayerBottom;
 	ClearEnemies();
 	ClearGunDrops();
 	ClearProjectiles();
@@ -71,8 +67,12 @@ void Game::ReInit()
 
 	Cleanup();
 
-	m_pPlayerBottom = new MasterChiefLegs(m_Textures, Point2f(360, 440), 12); //360, 11000
-	m_pPlayerTop = new MasterChiefTorso(m_Textures, m_Sounds, Point2f(360, 440), 12, GetViewPort());
+	//m_pPlayerBottom = new MasterChiefLegs(m_Textures, Point2f(360, 440), 12); //360, 11000
+	//m_pPlayerTop = new MasterChiefTorso(m_Textures, m_Sounds, Point2f(360, 440), 12, GetViewPort());
+
+	m_PlayerPtr->SetPosition(360, 440);
+	m_PlayerPtr->ChangeGun(GunType::SmartRifle, 30, 60, false);
+	m_PlayerPtr->ChangeGun(GunType::MagnumPistol, 10, 20, true);
 
 	//InitEnemies();
 	LoadElements("Covenant/EnemySpawn.csv");
@@ -95,20 +95,19 @@ void Game::Update( float elapsedSec )
 {
 	if (!m_GameEnd)
 	{
-		m_pPlayerBottom->SetFlipped(m_pPlayerTop->GetFlipped());
-		m_pPlayerTop->AdjustMousePos(m_Camera.CameraPos(m_pPlayerBottom->GetShape()));
+		m_PlayerPtr->SetFlipped(m_PlayerPtr->GetFlipped());
+		m_PlayerPtr->AdjustMousePos(m_Camera.CameraPos(m_PlayerPtr->GetShape()));
 
-		if (!m_pPlayerTop->IsDead())
+		if (!m_PlayerPtr->IsDead())
 		{
-			m_pPlayerBottom->Update(elapsedSec, m_Level);
-			m_pPlayerTop->Update(elapsedSec, m_Level, m_pPlayerBottom->GetShape(), m_Textures);
+			m_PlayerPtr->Update(elapsedSec, m_Level, m_Textures);
 			UpdateHUD();
 		}
 		else
 		{
 			if (!m_GameDead)
 			{
-				m_pPlayerDeath->SetLocation(Point2f(m_pPlayerTop->GetShape().left, m_pPlayerTop->GetShape().bottom));
+				m_pPlayerDeath->SetLocation(Point2f(m_PlayerPtr->GetShape().left, m_PlayerPtr->GetShape().bottom));
 				m_pPlayerDeath->ResetAnim();
 				m_GameDead = true;
 			}
@@ -126,7 +125,7 @@ void Game::Update( float elapsedSec )
 
 		for (int i{}; i < m_pEnemyArr.size(); i++)
 		{
-			m_pEnemyArr[i]->Update(elapsedSec, m_Level, m_pPlayerBottom->GetShape());
+			m_pEnemyArr[i]->Update(elapsedSec, m_Level, m_PlayerPtr->GetShape());
 		}
 		HandleInteractions(elapsedSec);
 		HandlePickups(elapsedSec);
@@ -150,7 +149,7 @@ void Game::Update( float elapsedSec )
 			m_EndAlpha = 0.f;
 	}
 
-	if (m_Level.HasReachedEnd(m_pPlayerBottom->GetShape()))
+	if (m_Level.HasReachedEnd(m_PlayerPtr->GetShape()))
 	{
 		if (!m_GameEnd)
 		{
@@ -168,7 +167,7 @@ void Game::Draw( ) const
 {
 	ClearBackground( );
 	glPushMatrix();
-	glTranslatef(-m_Camera.CameraPos(m_pPlayerBottom->GetShape()).x/20, -m_Camera.CameraPos(m_pPlayerBottom->GetShape()).y/20, 0);
+	glTranslatef(-m_Camera.CameraPos(m_PlayerPtr->GetShape()).x/20, -m_Camera.CameraPos(m_PlayerPtr->GetShape()).y/20, 0);
 	
 	m_Level.DrawOutside();
 	
@@ -176,7 +175,7 @@ void Game::Draw( ) const
 
 	glPushMatrix();
 	//glScalef(2, 2, 1);
-	glTranslatef(-m_Camera.CameraPos(m_pPlayerBottom->GetShape()).x, -m_Camera.CameraPos(m_pPlayerBottom->GetShape()).y, 0);
+	glTranslatef(-m_Camera.CameraPos(m_PlayerPtr->GetShape()).x, -m_Camera.CameraPos(m_PlayerPtr->GetShape()).y, 0);
 
 	m_Level.DrawBackground();
 	
@@ -184,7 +183,7 @@ void Game::Draw( ) const
 
 	m_Level.DrawForeground();
 
-	m_pPlayerTop->DrawCrossHair();
+	//m_PlayerPtr->DrawCrossHair();
 
 	glPopMatrix();
 
@@ -196,10 +195,9 @@ void Game::DrawEntities() const
 	for (int i{}; i < m_pEnemyArr.size(); i++)
 		m_pEnemyArr[i]->Draw();
 
-	if (!m_pPlayerTop->IsDead())
+	if (!m_PlayerPtr->IsDead())
 	{		
-		m_pPlayerTop->Draw();
-		m_pPlayerBottom->Draw();
+		m_PlayerPtr->Draw();
 	}
 	else
 	{
@@ -264,7 +262,7 @@ void Game::ProcessKeyUpEvent( const SDL_KeyboardEvent& e )
 void Game::ProcessMouseMotionEvent( const SDL_MouseMotionEvent& e )
 {
 	//std::cout << "MOUSEMOTION event: " << e.x << ", " << e.y << std::endl;
-	m_pPlayerTop->SaveMousePos(Point2f( e.x + m_Camera.CameraPos(m_pPlayerBottom->GetShape()).x, e.y + m_Camera.CameraPos(m_pPlayerBottom->GetShape()).y));
+	m_PlayerPtr->SaveMousePos(Point2f( e.x + m_Camera.CameraPos(m_PlayerPtr->GetShape()).x, e.y + m_Camera.CameraPos(m_PlayerPtr->GetShape()).y));
 }
 
 void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
@@ -273,10 +271,10 @@ void Game::ProcessMouseDownEvent( const SDL_MouseButtonEvent& e )
 	switch ( e.button )
 	{
 	case SDL_BUTTON_LEFT:
-		m_pPlayerTop->HandleFire(true);
+		m_PlayerPtr->HandleFire(true);
 		break;
 	case SDL_BUTTON_RIGHT:
-		m_pPlayerTop->HandleMelee();
+		m_PlayerPtr->HandleMelee();
 		break;
 	}
 }
@@ -287,7 +285,7 @@ void Game::ProcessMouseUpEvent( const SDL_MouseButtonEvent& e )
 	switch ( e.button )
 	{
 	case SDL_BUTTON_LEFT:
-		m_pPlayerTop->HandleFire(false);
+		m_PlayerPtr->HandleFire(false);
 		break;
 	}
 }
@@ -310,7 +308,7 @@ void Game::SetCamera()
 
 void Game::UpdateHUD()
 {
-	m_HUD.Update(m_pPlayerTop->GetShield(false), m_pPlayerTop->GetHealth(false), m_pPlayerTop->GetActiveGun(), m_pPlayerTop->GetAmmo(), m_pPlayerTop->GetReserve());
+	m_HUD.Update(m_PlayerPtr->GetShield(false), m_PlayerPtr->GetHealth(false), m_PlayerPtr->GetActiveGun(), m_PlayerPtr->GetAmmo(), m_PlayerPtr->GetReserve());
 }
 
 void Game::PlayLevelBGM() const
@@ -485,7 +483,7 @@ void Game::HandlePickups(float elapsedSec)
 	for (int i{}; i < m_pGunArr.size(); i++)
 	{
 		m_pGunArr[i]->Update(elapsedSec, m_Level);
-		if (m_pGunArr[i]->CheckOverlap(m_pPlayerBottom->GetShape()))
+		if (m_pGunArr[i]->CheckOverlap(m_PlayerPtr->GetShape()))
 		{
 			PickupInteract(m_pGunArr[i]->GetGunType(), m_pGunArr[i]->GetAmmo(), m_pGunArr[i]->GetReserve());
 			if (m_PickedUp)
@@ -500,15 +498,15 @@ void Game::HandlePickups(float elapsedSec)
 
 void Game::PickupInteract(GunType type, int ammo, int reserve)
 {
-	if (type != m_pPlayerTop->GetPrimary() && type != m_pPlayerTop->GetSecondary())
+	if (type != m_PlayerPtr->GetPrimary() && type != m_PlayerPtr->GetSecondary())
 	{
 		const Uint8* pStates = SDL_GetKeyboardState(nullptr);
 		if (pStates[SDL_SCANCODE_LSHIFT])
 		{
 			if (!m_ButtonPressed)
 			{
-				m_pGunArr.push_back(new GunPickup(m_Textures, m_pPlayerBottom->GetDropPoint(), m_pPlayerTop->GetActiveGun(), m_pPlayerTop->GetAmmo(), m_pPlayerTop->GetReserve()));
-				m_pPlayerTop->ChangeGun(type, ammo, reserve);
+				m_pGunArr.push_back(new GunPickup(m_Textures, m_PlayerPtr->GetDropPoint(), m_PlayerPtr->GetActiveGun(), m_PlayerPtr->GetAmmo(), m_PlayerPtr->GetReserve()));
+				m_PlayerPtr->ChangeGun(type, ammo, reserve, m_PlayerPtr->IsSecondaryEquipped());
 				m_PickedUp = true;
 				m_ButtonPressed = true;
 			}
@@ -517,24 +515,24 @@ void Game::PickupInteract(GunType type, int ammo, int reserve)
 	}
 	else
 	{
-		m_pPlayerTop->AddReserve(ammo + reserve, type);
+		m_PlayerPtr->AddReserve(ammo + reserve, type);
 		m_PickedUp = true;
 	}
 }
 
 void Game::HandleInteractions(float elapsedSec)
 {
-	if (m_pPlayerTop->IsShooting())
+	if (m_PlayerPtr->IsShooting())
 	{
-		NewPlayerProjectile(m_pPlayerTop->GetAngle());
+		NewPlayerProjectile(m_PlayerPtr->GetAngle());
 	}
-	if (m_pPlayerTop->IsMelee())
+	if (m_PlayerPtr->IsMelee())
 	{
 		for (int i{}; i < m_pEnemyArr.size(); i++)
 		{
-			if (utils::IsOverlapping(m_pEnemyArr[i]->GetShape(), m_pPlayerTop->GetShape()) && !m_pEnemyArr[i]->IsDead())
+			if (utils::IsOverlapping(m_pEnemyArr[i]->GetShape(), m_PlayerPtr->GetShape()) && !m_pEnemyArr[i]->IsDead())
 			{
-				m_pPlayerTop->PlayMeleeSound();
+				m_PlayerPtr->PlayMeleeSound();
 				m_pEnemyArr[i]->TakeDamage(50);
 			}
 		}
@@ -543,17 +541,18 @@ void Game::HandleInteractions(float elapsedSec)
 	{
 		if (m_pEnemyArr[i]->IsShooting())
 		{
-			Point2f dspcdPnt{ m_pPlayerTop->GetShape().left - m_pEnemyArr[i]->GetShape().left, m_pPlayerTop->GetShape().bottom - m_pEnemyArr[i]->GetShape().bottom };
+			Point2f dspcdPnt{ m_PlayerPtr->GetShape().left - m_pEnemyArr[i]->GetShape().left, 
+							m_PlayerPtr->GetShape().bottom - m_pEnemyArr[i]->GetShape().bottom };
 			float enemyAngle{ atan2f(dspcdPnt.y, dspcdPnt.x)};
 
 			NewEnemyProjectile(enemyAngle, i);
 		}
 		if (m_pEnemyArr[i]->IsMelee())
 		{
-			if (utils::IsOverlapping(m_pEnemyArr[i]->GetShape(), m_pPlayerTop->GetShape()))
+			if (utils::IsOverlapping(m_pEnemyArr[i]->GetShape(), m_PlayerPtr->GetShape()))
 			{
-				m_pPlayerTop->PlayMeleeSound();
-				m_pPlayerTop->TakeDamage(60);
+				m_PlayerPtr->PlayMeleeSound();
+				m_PlayerPtr->TakeDamage(60);
 			}
 		}
 	}
@@ -568,7 +567,7 @@ void Game::HandleInteractions(float elapsedSec)
 				m_pEnemyArr[j]->TakeDamage(m_pPlayerProjectileArr[i]->GetDamage());
 			}
 		}
-		if (m_pPlayerProjectileArr[i]->CheckDeletion() || !utils::IsOverlapping(m_pPlayerProjectileArr[i]->GetHitBox(), Rectf(m_Camera.CameraPos(m_pPlayerBottom->GetShape()).x, m_Camera.CameraPos(m_pPlayerBottom->GetShape()).y, GetViewPort().width, GetViewPort().height)))
+		if (m_pPlayerProjectileArr[i]->CheckDeletion() || !utils::IsOverlapping(m_pPlayerProjectileArr[i]->GetHitBox(), Rectf(m_Camera.CameraPos(m_PlayerPtr->GetShape()).x, m_Camera.CameraPos(m_PlayerPtr->GetShape()).y, GetViewPort().width, GetViewPort().height)))
 		{
 			delete m_pPlayerProjectileArr[i];
 			//std::cout << "DeleteProjectile\n";
@@ -580,12 +579,12 @@ void Game::HandleInteractions(float elapsedSec)
 	{
 		m_pEnemyProjectileArr[i]->UpdatePosition(elapsedSec, m_Level);
 
-		if (m_pEnemyProjectileArr[i]->CheckHit(m_pPlayerTop->GetShape()))
+		if (m_pEnemyProjectileArr[i]->CheckHit(m_PlayerPtr->GetShape()))
 		{
-			m_pPlayerTop->TakeDamage(m_pEnemyProjectileArr[i]->GetDamage());
+			m_PlayerPtr->TakeDamage(m_pEnemyProjectileArr[i]->GetDamage());
 		}
 
-		if (m_pEnemyProjectileArr[i]->CheckDeletion() || !utils::IsOverlapping(m_pEnemyProjectileArr[i]->GetHitBox(), Rectf(m_Camera.CameraPos(m_pPlayerBottom->GetShape()).x, m_Camera.CameraPos(m_pPlayerBottom->GetShape()).y, GetViewPort().width, GetViewPort().height)))
+		if (m_pEnemyProjectileArr[i]->CheckDeletion() || !utils::IsOverlapping(m_pEnemyProjectileArr[i]->GetHitBox(), Rectf(m_Camera.CameraPos(m_PlayerPtr->GetShape()).x, m_Camera.CameraPos(m_PlayerPtr->GetShape()).y, GetViewPort().width, GetViewPort().height)))
 		{
 			delete m_pEnemyProjectileArr[i];
 			//std::cout << "DeleteProjectile\n";
@@ -599,9 +598,9 @@ void Game::HandleInteractions(float elapsedSec)
 void Game::NewPlayerProjectile(float angle)
 {
 	m_pPlayerProjectileArr.push_back(new Projectile(m_Textures
-		, Point2f(m_pPlayerTop->GetShape().left + m_pPlayerTop->GetShape().width / 2
-			, m_pPlayerTop->GetShape().bottom + m_pPlayerTop->GetShape().height / 2)
-		, angle, m_pPlayerTop->GetActiveGun(), m_pPlayerTop->GetFlipped()));
+		, Point2f(m_PlayerPtr->GetShape().left + m_PlayerPtr->GetShape().width / 2
+			, m_PlayerPtr->GetShape().bottom + m_PlayerPtr->GetShape().height / 2)
+		, angle, m_PlayerPtr->GetActiveGun(), m_PlayerPtr->GetFlipped()));
 }
 
 void Game::NewEnemyProjectile(float angle, int idx)

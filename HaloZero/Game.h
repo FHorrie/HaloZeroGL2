@@ -83,9 +83,8 @@ private:
 	Screen m_EndScreen;
 	Screen m_DeathScreen;
 
-	MasterChiefLegs* m_pPlayerBottom{};
-	MasterChiefTorso* m_pPlayerTop{};
-	EnvironmentSprite* m_pPlayerDeath{};
+	std::unique_ptr<MasterChiefBase> m_PlayerPtr{};
+	std::unique_ptr<EnvironmentSprite> m_pPlayerDeath{};
 
 	Level m_Level;
 	Camera m_Camera;
