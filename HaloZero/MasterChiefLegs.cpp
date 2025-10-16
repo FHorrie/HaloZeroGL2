@@ -52,7 +52,6 @@ void MasterChiefLegs::Draw() const
 
 void MasterChiefLegs::Update(float elapsedSec)
 {
-	AnimatedSprite::Update(elapsedSec);
 	UpdateFramesState();
 	UpdateCurrentFrame(elapsedSec);	
 }

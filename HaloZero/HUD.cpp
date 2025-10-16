@@ -121,8 +121,8 @@ void HUD::DrawAmmoHUD() const
 
 void HUD::DrawAmmoNumbers() const
 {
-	int amtOfNrs{ 10 };
-	int nrOffset{ 6 };
+	const int amtOfNrs{ 10 };
+	const int nrOffset{ 6 };
 
 	Rectf srcRect{};
 	srcRect.width = m_NumbersSpritePtr->GetWidth() / amtOfNrs;
@@ -133,43 +133,23 @@ void HUD::DrawAmmoNumbers() const
 	destRect.height = srcRect.height;
 	destRect.bottom = m_ViewPort.height - m_Offset - m_NumbersSpritePtr->GetHeight() - 3;
 
-	if (!m_IsEnergyWeapon)
-	{
-		if (m_AmmoReserve >= 100)
-		{
-			destRect.left = m_Offset + nrOffset;
-			srcRect.left = (m_AmmoReserve / 100) * srcRect.width;
-			m_NumbersSpritePtr->Draw(destRect, srcRect);
-		}
-		if (m_AmmoReserve >= 10)
-		{
-			destRect.left = m_Offset + srcRect.width + nrOffset - 1;
-			srcRect.left = ((m_AmmoReserve % 100) / 10) * srcRect.width;
-			m_NumbersSpritePtr->Draw(destRect, srcRect);
-		}
-		destRect.left = m_Offset + srcRect.width * 2 + nrOffset - 2;
-		srcRect.left = (m_AmmoReserve % 10) * srcRect.width;
-		m_NumbersSpritePtr->Draw(destRect, srcRect);
-	}
-	else
-	{
-		if (m_AmmoCount >= 100)
-		{
-			destRect.left = m_Offset + nrOffset;
-			srcRect.left = (m_AmmoCount / 100) * srcRect.width;
-			m_NumbersSpritePtr->Draw(destRect, srcRect);
-		}
-		if (m_AmmoCount >= 10)
-		{
-			destRect.left = m_Offset + srcRect.width + nrOffset - 1;
-			srcRect.left = ((m_AmmoCount % 100) / 10) * srcRect.width;
-			m_NumbersSpritePtr->Draw(destRect, srcRect);
-		}
-		destRect.left = m_Offset + srcRect.width * 2 + nrOffset - 2;
-		srcRect.left = (m_AmmoCount % 10) * srcRect.width;
-		m_NumbersSpritePtr->Draw(destRect, srcRect);
-	}
+	const int ammoReference{ m_IsEnergyWeapon ? m_AmmoCount : m_AmmoReserve };
 
+	if (ammoReference >= 100)
+	{
+		destRect.left = m_Offset + nrOffset;
+		srcRect.left = (ammoReference / 100) * srcRect.width;
+		m_NumbersSpritePtr->Draw(destRect, srcRect);
+	}
+	if (ammoReference >= 10)
+	{
+		destRect.left = m_Offset + srcRect.width + nrOffset - 1;
+		srcRect.left = ((ammoReference % 100) / 10) * srcRect.width;
+		m_NumbersSpritePtr->Draw(destRect, srcRect);
+	}
+	destRect.left = m_Offset + srcRect.width * 2 + nrOffset - 2;
+	srcRect.left = (ammoReference % 10) * srcRect.width;
+	m_NumbersSpritePtr->Draw(destRect, srcRect);
 }
 
 void HUD::SetCurrentShield(float currentShield)
