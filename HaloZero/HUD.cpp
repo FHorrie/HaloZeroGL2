@@ -57,8 +57,6 @@ void HUD::DrawAmmoHUD() const
 	int rowSplitCount{};
 	int row{};
 	
-	Rectf srcRect{0, 0, m_AmmoBulletsSpritePtr->GetWidth() / 2, m_AmmoBulletsSpritePtr->GetHeight() / 3};
-
 	switch (m_GunType)
 	{
 	case GunType::SmartRifle:
@@ -85,10 +83,11 @@ void HUD::DrawAmmoHUD() const
 		break;
 	}
 
-	srcRect.bottom = row * srcRect.height;
-
 	if (drawAmmo)
 	{
+		Rectf srcRect{0, 0, m_AmmoBulletsSpritePtr->GetWidth() / 2, m_AmmoBulletsSpritePtr->GetHeight() / 3};
+		srcRect.bottom = row * srcRect.height;
+		
 		for (int i{}; i < magSize; i++)
 		{
 			const bool bulletUsed{ i >= m_AmmoCount };

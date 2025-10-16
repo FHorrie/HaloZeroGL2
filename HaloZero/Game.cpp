@@ -308,7 +308,8 @@ void Game::SetCamera()
 
 void Game::UpdateHUD()
 {
-	m_HUD.Update(m_PlayerPtr->GetShield(false), m_PlayerPtr->GetHealth(false), m_PlayerPtr->GetActiveGun(), m_PlayerPtr->GetAmmo(), m_PlayerPtr->GetReserve());
+	m_HUD.Update(m_PlayerPtr->GetShield(false), m_PlayerPtr->GetHealth(false), 
+		m_PlayerPtr->GetActiveGun(), m_PlayerPtr->GetAmmo(), m_PlayerPtr->GetReserve());
 }
 
 void Game::PlayLevelBGM() const
