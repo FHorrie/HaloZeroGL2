@@ -92,7 +92,7 @@ void HUD::DrawAmmoHUD() const
 		for (int i{}; i < magSize; i++)
 		{
 			const bool bulletUsed{ i >= m_AmmoCount };
-			const int heightDiff{ rowSplitCount > 0 ? i / magSize / rowSplitCount : 0 };
+			const int heightDiff{ rowSplitCount > 0 ? i / (magSize / rowSplitCount) : 0 };
 
 			srcRect.left = static_cast<int>(bulletUsed) * srcRect.width;
 
@@ -107,8 +107,6 @@ void HUD::DrawAmmoHUD() const
 				dstRect.left = m_Offset * (i + 1);
 				dstRect.bottom = m_ViewPort.height - m_TopLeftSpritePtr->GetHeight() - m_AmmoBulletsSpritePtr->GetHeight() / 3 * (1 + (heightDiff)) - m_Offset - 4;
 			}
-
-			std::cout << "Left: " << dstRect.left << ", Bottom: " << dstRect.bottom << std::endl;
 
 			m_AmmoBulletsSpritePtr->Draw(dstRect, srcRect);
 		}
