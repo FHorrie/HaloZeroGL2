@@ -79,6 +79,28 @@ void MasterChiefBase::Update(float elapsedSec, const Level& level, const StaticT
 	m_LegsPtr->Update(elapsedSec);
 }
 
+void MasterChiefBase::Reset()
+{
+	m_IsFlipped = false;
+	m_IsBackwards = false;
+	m_Dead = false;
+
+	m_Shield = m_MaxShield;
+	m_Health = m_MaxHealth;
+
+	ChangeGun(GunType::SmartRifle, 60, 60, false);
+	ChangeGun(GunType::MagnumPistol, 10, 20, true);
+	m_IsSecondaryEquipped = false;
+
+	m_LMouse = false;
+	m_ShotFired = false;
+	m_Meleeing = false;
+	m_DecreaseAmmo = false;
+	m_NoFire = false;
+	m_NoMovementUpdate = false;
+
+}
+
 void MasterChiefBase::SetPosition(Point2f pos)
 {
 	SetPosition(pos.x, pos.y);

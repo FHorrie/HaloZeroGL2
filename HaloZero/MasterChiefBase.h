@@ -54,6 +54,8 @@ public:
 			m_HitBox.bottom + 2 * m_HitBox.height / 3);
 	}
 
+	void Reset();
+
 	void SetPosition(Point2f pos);
 	void SetPosition(float x, float y);
 
@@ -117,13 +119,12 @@ protected:
 
 	bool m_IsFlipped{ false };
 	bool m_IsBackwards{ false };
-	bool m_IsDead{ false };
+	bool m_Dead{ false };
 
 	const float m_MaxShield{ 150 };
 	float m_Shield{ m_MaxShield };
 	const float m_MaxHealth{ 70 };
 	float m_Health{ m_MaxHealth };
-	bool m_Dead{ false };
 
 	float m_RegenAccuTime{};
 	const float m_MaxRegenTime{ 2.f };

@@ -67,12 +67,8 @@ void Game::ReInit()
 
 	Cleanup();
 
-	//m_pPlayerBottom = new MasterChiefLegs(m_Textures, Point2f(360, 440), 12); //360, 11000
-	//m_pPlayerTop = new MasterChiefTorso(m_Textures, m_Sounds, Point2f(360, 440), 12, GetViewPort());
-
 	m_PlayerPtr->SetPosition(360, 440);
-	m_PlayerPtr->ChangeGun(GunType::SmartRifle, 30, 60, false);
-	m_PlayerPtr->ChangeGun(GunType::MagnumPistol, 10, 20, true);
+	m_PlayerPtr->Reset();
 
 	//InitEnemies();
 	LoadElements("Covenant/EnemySpawn.csv");
