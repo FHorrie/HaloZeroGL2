@@ -95,7 +95,7 @@ void MasterChiefBase::ChangeMovementState(MoveState state)
 	m_MoveState = state;
 	m_LegsPtr->Reset();
 	
-	if (m_MoveState > MoveState::Jumping)
+	if (m_MoveState == MoveState::WaitingCrouch || m_MoveState == MoveState::RunningCrouch)
 	{
 		m_HitBox.height = 75;
 	}
@@ -113,18 +113,25 @@ void MasterChiefBase::ChangeActionState(ActionState state)
 
 void MasterChiefBase::UpdatePosition(float elapsedSec, const Level& level)
 {
-	if (!level.IsOnGround(m_HitBox, m_Velocity))
+	if (level.IsOnGround(m_HitBox, m_Velocity) == false)
 	{
 		m_Velocity.y += m_Acceleration.y * elapsedSec;
 		m_JumpBuffer += elapsedSec;
-		if (m_JumpBuffer > 0.15f)
+		if (m_MoveState != MoveState::Jumping && m_JumpBuffer > 0.15f)
 		{
-			m_MoveState = MoveState::Jumping;
+			ChangeMovementState(MoveState::Jumping);
+			m_NoMovementUpdate = true;
 		}
 	}
 	else
 	{
-		m_JumpBuffer = 0.f;
+		if (m_MoveState != MoveState::Waiting && m_JumpBuffer > 0.f)
+		{
+			m_JumpBuffer = 0.f;
+			ChangeMovementState(MoveState::Waiting);
+			m_NoMovementUpdate = false;
+		}
+
 		switch (m_MoveState)
 		{
 		case MoveState::Waiting:
@@ -157,6 +164,8 @@ void MasterChiefBase::UpdatePosition(float elapsedSec, const Level& level)
 void MasterChiefBase::UpdateInput()
 {
 	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
+
+	if (m_NoMovementUpdate) return;
 
 	// Movement states
 	if (pStates[SDL_SCANCODE_SPACE])

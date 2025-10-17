@@ -168,6 +168,7 @@ protected:
 	bool m_Meleeing{ false };
 	bool m_DecreaseAmmo{ false };
 	bool m_NoFire{ false };
+	bool m_NoMovementUpdate{ false };
 	
 	void ChangeMovementState(MoveState state);
 	void ChangeActionState(ActionState state);
