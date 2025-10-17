@@ -1,26 +1,27 @@
 #pragma once
-#include "MasterChiefBase.h"
+#include "AnimatedSprite.h"
 
-class MasterChiefLegs final : public MasterChiefBase
+class MasterChiefBase;
+
+class MasterChiefLegs final : public AnimatedSprite
 {
 public:
-	explicit MasterChiefLegs(const StaticTextures& textures, const Point2f& startLocation, unsigned short framerate);
+	explicit MasterChiefLegs(const StaticTextures& textures, 
+		const Point2f& startLocation, unsigned short framerate, MasterChiefBase* const base);
 	MasterChiefLegs(const MasterChiefLegs& other) = delete;
 	MasterChiefLegs& operator= (const MasterChiefLegs& other) = delete;
 	MasterChiefLegs(MasterChiefLegs&& other) = delete;
 	MasterChiefLegs& operator=(MasterChiefLegs&& other) = delete;
 	~MasterChiefLegs() = default;
 
-
 	void Draw() const override;
-	void Update(float elapsedSec, const Level& level);
-
-	void SetFlipped(bool flipped);
+	void Update(float elapsedSec);
 
 private:
-	unsigned short m_CurrentRow;
+	unsigned short m_CurrentRow{};
 
-	void InputStateMovement();
+	MasterChiefBase* const m_BasePtr{};
+
 	void UpdateFramesState();
 	void UpdateCurrentFrame(float elapsedSec);
 };

@@ -18,27 +18,27 @@ public:
 private:
 	const Rectf m_ViewPort;
 
-	const Texture* m_pHUDTopL;
-	const Texture* m_pHUDTopRShroud;
-	const Texture* m_pHUDHealthFill;
-	const Texture* m_pHUDShieldFill;
-	const Texture* m_pHUDAmmoType;
-	const Texture* m_pHUDAmmoBullets;
-	const Texture* m_pHUDNumbers;
+	const Texture* m_TopLeftSpritePtr;
+	const Texture* m_ShroudSpritePtr;
+	const Texture* m_HealthFillSpritePtr;
+	const Texture* m_ShieldFillSpritePtr;
+	const Texture* m_AmmoTypeSpritePtr;
+	const Texture* m_AmmoBulletsSpritePtr;
+	const Texture* m_NumbersSpritePtr;
 
-	const float m_Offset;
+	const float m_Offset{ 10.f };
 
-	float m_CurrentShield;
-	const float m_MaxShield;
-	float m_CurrentHealth;
-	const float m_MaxHealth;
+	float m_CurrentShield{};
+	const float m_MaxShield{};
+	float m_CurrentHealth{};
+	const float m_MaxHealth{};
 
-	GunType m_GunType;
+	GunType m_GunType{};
 
-	int m_AmmoCount;
-	int m_AmmoReserve;
+	int m_AmmoCount{};
+	int m_AmmoReserve{};
 
-	bool m_EnergyWeapon;
+	bool m_IsEnergyWeapon{};
 
 	void DrawBaseHUD() const;
 	void DrawAmmoHUD() const;

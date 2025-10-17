@@ -1,17 +1,21 @@
 #include "pch.h"
 #include "debugpch.h"
 #include "MasterChiefLegs.h"
+#include "MasterChiefBase.h"
 #include "Texture.h"
 #include "utils.h"
 
-MasterChiefLegs::MasterChiefLegs(const StaticTextures& textures, const Point2f& startLocation, unsigned short framerate)
-	:MasterChiefBase("MasterChiefLegs", textures, startLocation, framerate, 4, 9),
-	m_CurrentRow{}
+MasterChiefLegs::MasterChiefLegs(const StaticTextures& textures, 
+	const Point2f& startLocation, unsigned short framerate, MasterChiefBase* const base)
+	: AnimatedSprite("MasterChiefLegs", textures, startLocation, 0, framerate, 4, 9)
+	, m_BasePtr{ base }
 {
 }
 
 void MasterChiefLegs::Draw() const
 {
+	Rectf currentHitbox{ m_BasePtr->GetHitbox() };
+
 	Rectf srcRect{};
 	srcRect.width = m_pSpriteTexture->GetWidth() / m_Cols;
 	srcRect.height = m_pSpriteTexture->GetHeight() / m_Rows;
@@ -24,13 +28,14 @@ void MasterChiefLegs::Draw() const
 	destRect.width = srcRect.width;
 	destRect.height = srcRect.height;
 
-	glPushMatrix();
-	glTranslatef(m_HitBox.left, m_HitBox.bottom, 0);
 
-	if (m_IsFlipped)
+	glPushMatrix();
+	glTranslatef(currentHitbox.left, currentHitbox.bottom, 0);
+
+	if (m_BasePtr->GetFlipped())
 	{
 		glScalef(-1, 1, 1);
-		glTranslatef(-m_HitBox.width, 0, 0);
+		glTranslatef(-currentHitbox.width, 0, 0);
 	}
 
 	m_pSpriteTexture->Draw(destRect, srcRect);
@@ -38,71 +43,22 @@ void MasterChiefLegs::Draw() const
 	glPopMatrix();
 
 #ifdef _DEBUG_HITBOX
-		utils::SetColor(Color4f(1.f, 1.f, 0.f, 1.f));
-		utils::DrawRect(m_HitBox);
+	utils::SetColor(Color4f(1.f, 1.f, 0.f, 1.f));
+	utils::DrawRect(currentHitbox);
 #endif
+
 }
 
 
-void MasterChiefLegs::Update(float elapsedSec, const Level& level)
+void MasterChiefLegs::Update(float elapsedSec)
 {
 	UpdateFramesState();
-	InputStateMovement();
-	UpdatePosition(elapsedSec, level);
-	UpdateCurrentFrame(elapsedSec);
-	
-}
-
-void MasterChiefLegs::InputStateMovement()
-{
-	const Uint8* pStates = SDL_GetKeyboardState(nullptr);
-
-	//Movement states
-	if (pStates[SDL_SCANCODE_SPACE])
-	{
-		if (m_MoveState != MoveState::Jumping && m_MoveState != MoveState::WaitingCrouch && m_MoveState != MoveState::RunningCrouch)
-			ChangeMovementState(MoveState::Jumping);
-	}
-	else if (pStates[SDL_SCANCODE_D] && pStates[SDL_SCANCODE_S])
-	{
-		if (m_MoveState != MoveState::RunningCrouch)
-			ChangeMovementState(MoveState::RunningCrouch);
-		m_IsBackwards = m_IsFlipped;
-	}
-	else if (pStates[SDL_SCANCODE_A] && pStates[SDL_SCANCODE_S])
-	{
-		if (m_MoveState != MoveState::RunningCrouch)
-			ChangeMovementState(MoveState::RunningCrouch);
-		m_IsBackwards = !m_IsFlipped;
-	}
-	else if (pStates[SDL_SCANCODE_S])
-	{
-		if (m_MoveState != MoveState::WaitingCrouch)
-			ChangeMovementState(MoveState::WaitingCrouch);
-	}
-	else if (pStates[SDL_SCANCODE_D])
-	{
-		if (m_MoveState != MoveState::Running)
-			ChangeMovementState(MoveState::Running);
-		m_IsBackwards = m_IsFlipped;
-	}
-	else if (pStates[SDL_SCANCODE_A])
-	{
-		if (m_MoveState != MoveState::Running)
-			ChangeMovementState(MoveState::Running);
-		m_IsBackwards = !m_IsFlipped;
-	}
-	else
-	{
-		if (m_MoveState != MoveState::Waiting)
-			ChangeMovementState(MoveState::Waiting);
-	}
+	UpdateCurrentFrame(elapsedSec);	
 }
 
 void MasterChiefLegs::UpdateFramesState()
 {
-
-	switch (m_MoveState)
+	switch (m_BasePtr->GetMoveState())
 	{
 	case MoveState::Waiting:
 		m_nFrames = 1;
@@ -147,7 +103,7 @@ void MasterChiefLegs::UpdateCurrentFrame(float elapsedSec)
 	{
 		m_AccuTime -= 1.f / m_Framerate;
 
-		if (!m_IsBackwards)
+		if (m_BasePtr->IsBackwards() == false)
 		{
 			if (m_CurrentFrame < (m_nFrames - 1))
 			{
@@ -171,11 +127,5 @@ void MasterChiefLegs::UpdateCurrentFrame(float elapsedSec)
 				else;
 			}
 		}
-
 	}
-}
-
-void MasterChiefLegs::SetFlipped(bool flipped)
-{
-	m_IsFlipped = flipped;
 }
