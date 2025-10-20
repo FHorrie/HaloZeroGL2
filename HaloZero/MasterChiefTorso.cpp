@@ -15,10 +15,10 @@ MasterChiefTorso::MasterChiefTorso(const StaticTextures& textures,
 
 void MasterChiefTorso::Draw() const
 {
-	Rectf currentHitbox{ m_BasePtr->GetHitbox() };
-	float currentAngle{ m_BasePtr->GetAngle() };
-	bool flipped{ m_BasePtr->GetFlipped() };
-	bool secondaryEquipped{ m_BasePtr->GetFlipped() };
+	const Rectf currentHitbox{ m_BasePtr->GetHitbox() };
+	const float currentAngle{ m_BasePtr->GetAngle() };
+	const bool flipped{ m_BasePtr->GetFlipped() };
+	const bool secondaryEquipped{ m_BasePtr->GetFlipped() };
 
 	Rectf srcRect{};
 	srcRect.width = m_pSpriteTexture->GetWidth() / m_Cols;
@@ -32,29 +32,17 @@ void MasterChiefTorso::Draw() const
 	destRect.width = srcRect.width;
 	destRect.height = srcRect.height;
 
-	
+	const float offsetAmount{ 5.f };
+	const float xOffset{ flipped ? currentHitbox.Center().x - offsetAmount : currentHitbox.Center().x + offsetAmount };	
 	glPushMatrix();
-	glTranslatef(currentHitbox.left + 4 * currentHitbox.width / 7, currentHitbox.bottom + currentHitbox.height - 50, 0);
-
+	glTranslatef(xOffset, currentHitbox.bottom + currentHitbox.height - 50, 0);
+	glRotatef(currentAngle / float(M_PI) * 180.f, 0, 0, 1);
 	if (flipped)
 	{
-		glTranslatef(-currentHitbox.width / 8, 0, 0);
-		glRotatef(currentAngle / float(M_PI) * 180.f, 0, 0, 1);
 		glScalef(-1, 1, 1);
 	}
-	else
-	{
-		glRotatef(currentAngle / float(M_PI) * 180.f, 0, 0, 1);
-	}
-
 	m_pSpriteTexture->Draw(destRect, srcRect);
 	glPopMatrix();
-
-#ifdef _DEBUG_HITBOX
-		utils::SetColor(Color4f(0.f, 1.f, 1.f, 1.f));
-		DrawMouseLine();
-#endif
-	
 }
 
 void MasterChiefTorso::Update(float elapsedSec)

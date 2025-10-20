@@ -57,6 +57,12 @@ void MasterChiefBase::Draw() const
 	m_CrossHairTexturePtr->Draw(crosshairSrcRect, crosshairDestRect);
 
 	DrawCasings();
+
+#ifdef _DEBUG_HITBOX
+	utils::SetColor(Color4f(1.f, 1.f, 0.f, 1.f));
+	utils::DrawRect(m_HitBox);
+	DrawMouseLine();
+#endif
 }
 
 void MasterChiefBase::Update(float elapsedSec, const Level& level, const StaticTextures& textures)
@@ -358,13 +364,14 @@ void MasterChiefBase::TorsoAnimationLoopCompleted()
 void MasterChiefBase::DrawMouseLine() const
 {
 	Point2f startPoint{ m_HitBox.left + m_HitBox.width / 2, m_HitBox.bottom + 3 * m_HitBox.height / 4 };
+	utils::SetColor(Color4f(0.f, 1.f, 1.f, 1.f));
 	utils::DrawLine(startPoint, m_MousePos);
 }
 
 void MasterChiefBase::CalcMouseAngle()
 {
-	Point2f startPoint = Point2f(m_HitBox.left + m_HitBox.width / 2, m_HitBox.bottom + 3 * m_HitBox.height / 4);
-	float pi{ float(M_PI) };
+	const Point2f startPoint = Point2f(m_HitBox.left + m_HitBox.width / 2, m_HitBox.bottom + 3 * m_HitBox.height / 4);
+	const float pi{ float(M_PI) };
 	float angle{ atan2f(m_MousePos.y - startPoint.y, m_MousePos.x - startPoint.x) };
 
 	m_IsFlipped = angle > pi / 2 || angle < -pi / 2;

@@ -41,12 +41,6 @@ void MasterChiefLegs::Draw() const
 	m_pSpriteTexture->Draw(destRect, srcRect);
 	
 	glPopMatrix();
-
-#ifdef _DEBUG_HITBOX
-	utils::SetColor(Color4f(1.f, 1.f, 0.f, 1.f));
-	utils::DrawRect(currentHitbox);
-#endif
-
 }
 
 
