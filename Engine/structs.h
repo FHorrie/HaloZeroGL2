@@ -27,6 +27,8 @@ struct Rectf
 {
 	Rectf( );
 	explicit Rectf( float left, float bottom, float width, float height );
+
+	Point2f Center() const;
 	
 	float left;
 	float bottom;
