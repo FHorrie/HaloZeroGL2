@@ -310,20 +310,23 @@ void Game::UpdateHUD()
 
 void Game::PlayLevelBGM() const
 {
-	m_Sounds.GetSoundStream("Level1")->SetVolume(25);
-	m_Sounds.GetSoundStream("Level1")->Play(true);
+	SoundStream const* const levelBgmPtr{ m_Sounds.GetSoundStream("Level1") };
+	levelBgmPtr->SetVolume(25);
+	levelBgmPtr->Play(true);
 }
 
 void Game::PlayWinBGM() const
 {
-	m_Sounds.GetSoundStream("GameWin")->SetVolume(70);
-	m_Sounds.GetSoundStream("GameWin")->Play(true);
+	SoundStream const* const gameWinPtr{ m_Sounds.GetSoundStream("GameWin") };
+	gameWinPtr->SetVolume(70);
+	gameWinPtr->Play(true);
 }
 
 void Game::PlayDeathBGM() const
 {
-	m_Sounds.GetSoundStream("GameDead")->SetVolume(50);
-	m_Sounds.GetSoundStream("GameDead")->Play(true);
+	SoundStream const* const deathBgmPtr{ m_Sounds.GetSoundStream("GameDead") };
+	deathBgmPtr->SetVolume(50);
+	deathBgmPtr->Play(true);
 }
 
 void Game::LoadElements(std::string fileLocation)
