@@ -17,7 +17,7 @@ void AnimatedSprite::Draw() const
 	srcRect.width = m_pSpriteTexture->GetWidth() / m_Cols;
 	srcRect.height = m_pSpriteTexture->GetHeight() / ((m_Cols * m_Rows) / m_Cols);
 	srcRect.left = (m_CurrentFrame % m_Cols) * srcRect.width;
-	srcRect.bottom = srcRect.height * ((m_CurrentFrame / m_Cols));
+	srcRect.bottom = srcRect.height * (m_CurrentFrame / m_Cols);
 
 	Rectf destRect{};
 	destRect.left = m_Position.x;
@@ -31,12 +31,18 @@ void AnimatedSprite::Draw() const
 void AnimatedSprite::Update(float elapsedSec)
 {
 	m_AccuTime += elapsedSec;
-	if (m_AccuTime >= (1.f / m_Framerate))
+	if (m_AccuTime >= 1.f / m_Framerate)
 	{
-		m_AccuTime -= 1.f / m_Framerate;
+		m_AccuTime = 0.f;
 
-		if (m_Looped) (m_CurrentFrame < m_nFrames) ? m_CurrentFrame++ : m_CurrentFrame = 0;
-		else (m_CurrentFrame < m_nFrames) ? m_CurrentFrame++ : m_CurrentFrame = m_nFrames;
+		if (m_Looped)
+		{
+			(m_CurrentFrame < m_nFrames) ? ++m_CurrentFrame : m_CurrentFrame = 0;
+		}
+		else
+		{
+			(m_CurrentFrame < m_nFrames) ? ++m_CurrentFrame : m_CurrentFrame = m_nFrames;
+		}
 	}
 }
 

@@ -23,7 +23,7 @@ void MasterChiefTorso::Draw() const
 	Rectf srcRect{};
 	srcRect.width = m_pSpriteTexture->GetWidth() / m_Cols;
 	srcRect.height = m_pSpriteTexture->GetHeight() / m_Rows;
-	srcRect.left = (m_CurrentFrame % m_Cols) * srcRect.width;
+	srcRect.left = (m_CurrentFrame % (m_Cols + 1)) * srcRect.width;
 	srcRect.bottom = srcRect.height * (m_CurrentRow * 2 + m_RowOffset + 1);
 
 	Rectf destRect{};
@@ -135,9 +135,10 @@ void MasterChiefTorso::UpdateCurrentFrame(float elapsedSec)
 
 	m_AccuTime += elapsedSec;
 
-	if (m_AccuTime < (1.f / m_Framerate)) return;
-
-	m_AccuTime = 0;
+	if (m_AccuTime < 1.f / m_Framerate)
+	{
+		return;
+	}
 
 	if (m_CurrentFrame < (m_nFrames - 1))
 	{
@@ -146,8 +147,8 @@ void MasterChiefTorso::UpdateCurrentFrame(float elapsedSec)
 	else
 	{
 		m_BasePtr->TorsoAnimationLoopCompleted();
-
-		if (m_Looped)
-			m_CurrentFrame = 0;
+		m_CurrentFrame = m_Looped ? 0 : m_nFrames;
 	}
+
+	m_AccuTime = 0;
 }
