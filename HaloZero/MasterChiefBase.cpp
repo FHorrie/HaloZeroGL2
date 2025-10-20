@@ -88,6 +88,8 @@ void MasterChiefBase::Reset()
 	m_Shield = m_MaxShield;
 	m_Health = m_MaxHealth;
 
+	m_RegenAccuTime = 0.f;
+
 	ChangeGun(GunType::SmartRifle, 60, 60, false);
 	ChangeGun(GunType::MagnumPistol, 10, 20, true);
 	m_IsSecondaryEquipped = false;
@@ -452,6 +454,7 @@ void MasterChiefBase::HandleRegen(float elapsedSec)
 		m_RechargePlayed = false;
 		m_ShieldBeepTime = 0.f;
 		m_ShieldAccuTime = 0.f;
+		m_RegenAccuTime = 0.f;
 	}
 
 
@@ -466,53 +469,34 @@ void MasterChiefBase::HandleAmmo(float elapsedSec)
 		m_DecreaseAmmo = false;
 	}
 
-	if (m_IsSecondaryEquipped == false && m_PrimaryAmmo <= 0)
+	int& ammoRef = m_IsSecondaryEquipped ? m_SecondaryAmmo : m_PrimaryAmmo;
+	int& reserveRef = m_IsSecondaryEquipped ? m_SecondaryReserve : m_PrimaryReserve;
+	float& reloadTimeRef = m_IsSecondaryEquipped ? m_SecondaryReloadTime : m_PrimaryReloadTime;
+
+	if (ammoRef <= 0)
 	{
 		m_NoFire = true;
-		m_PrimaryReloadTime += elapsedSec;
-		if (m_PrimaryReloadTime >= 2.f && m_PrimaryReserve > 0)
+		reloadTimeRef += elapsedSec;
+		if (reloadTimeRef >= 2.f && reserveRef > 0)
 		{
-			int magSize{ GetWeaponMagSize(m_FirstSlot) };
-			if (m_PrimaryReserve <= magSize)
+			int magSize{ GetWeaponMagSize(m_IsSecondaryEquipped ? m_SecondSlot : m_FirstSlot) };
+			if (reserveRef <= magSize)
 			{
-				m_PrimaryAmmo = m_PrimaryReserve;
-				m_PrimaryReserve = 0;
-				//std::cout << "OUT OF AMMO, Primary reserve ammo: " << m_PrimaryReserve << "\n";
+				ammoRef = reserveRef;
+				reserveRef = 0;
+				//std::cout << "OUT OF AMMO, reserve ammo: " << reserveRef << "\n";
 			}
 			else
 			{
-				m_PrimaryAmmo = magSize;
-				m_PrimaryReserve -= magSize;
-				//std::cout << "RELOADING, Primary reserve ammo: " << m_PrimaryReserve << "\n";
+				ammoRef = magSize;
+				reserveRef -= magSize;
+				//std::cout << "RELOADING, reserve ammo: " << reserveRef << "\n";
 			}
 			m_pReloadSound->Play(0);
-			m_PrimaryReloadTime = 0;
+			reloadTimeRef = 0;
 		}
 	}
 
-	else if (m_IsSecondaryEquipped && m_SecondaryAmmo <= 0)
-	{
-		m_NoFire = true;
-		m_SecondaryReloadTime += elapsedSec;
-		if (m_SecondaryReloadTime >= 2.f && m_SecondaryReserve > 0)
-		{
-			int magSize{ GetWeaponMagSize(m_SecondSlot) };
-			if (m_SecondaryReserve <= magSize)
-			{
-				m_SecondaryAmmo = m_SecondaryReserve;
-				m_SecondaryReserve = 0;
-				//std::cout << "OUT OF AMMO, Secondary reserve Ammo: " << m_SecondaryReserve << "\n";
-			}
-			else
-			{
-				m_SecondaryAmmo = magSize;
-				m_SecondaryReserve -= magSize;
-				//std::cout << "RELOADING, Secondary Reserve Ammo: " << m_SecondaryReserve << "\n";
-			}
-			m_pReloadSound->Play(0);
-			m_SecondaryReloadTime = 0;
-		}
-	}
 	else m_NoFire = false;
 }
 

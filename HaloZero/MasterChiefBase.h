@@ -153,8 +153,8 @@ protected:
 	const SoundEffect* m_pMeleeSound{};
 	const SoundEffect* m_pReloadSound{};
 
-	const SoundEffect* m_pShieldBeep;
-	const SoundEffect* m_pShieldRecharge;
+	const SoundEffect* m_pShieldBeep{};
+	const SoundEffect* m_pShieldRecharge{};
 
 
 	float m_ShieldBeepTime{};
