@@ -1,48 +1,43 @@
 #include "pch.h"
 #include "debugpch.h"
 #include "Projectile.h"
+#include "Constants.h"
 #include <iostream>
 
 Projectile::Projectile(const StaticTextures& textures, const Point2f& startLocation, float angle, GunType type, bool isFlipped)
 	:StaticSprite("Projectile", textures, startLocation)
-	, m_BulletType{}
-	, m_DrawBullet{}
-	, m_Damage{}
 	, m_Cols{ 4 }
 	, m_Angle{ angle }
-	, m_HitBox{}
-	, m_BulletSpeed{}
-	, m_DirVelocity{}
 	, m_IsFlipped{isFlipped}	
 {
 	switch (type)
 	{
 	case GunType::SmartRifle:
 		m_DrawBullet = false;
-		m_BulletSpeed = 1500.f;
+		m_BulletSpeed = constants::SolidBulletSpeed;
 		m_Damage = 8;
 		break;
 	case GunType::MagnumPistol:
 		m_DrawBullet = false;
-		m_BulletSpeed = 1500.f;
+		m_BulletSpeed = constants::SolidBulletSpeed;
 		m_Damage = 12;
 		break;
 	case GunType::PlasmaPistol:
 		m_BulletType = 0;
 		m_DrawBullet = true;
-		m_BulletSpeed = 700.f;
+		m_BulletSpeed = constants::EnergyBulletSpeed;
 		m_Damage = 8;
 		break;
 	case GunType::PlasmaRifle:
 		m_BulletType = 1;
 		m_DrawBullet = true;
-		m_BulletSpeed = 700.f;
+		m_BulletSpeed = constants::EnergyBulletSpeed;
 		m_Damage = 10;
 		break;
 	case GunType::Needler:
 		m_BulletType = 2;
 		m_DrawBullet = true;
-		m_BulletSpeed = 650.f;
+		m_BulletSpeed = constants::NeedleBulletSpeed;
 		m_Damage = 12;
 		break;
 	}
@@ -77,14 +72,8 @@ Projectile::Projectile(const StaticTextures& textures, const Point2f& startLocat
 
 Projectile::Projectile(const StaticTextures& textures, const Point2f& startLocation, float angle, EnemyGunType enemyType, bool enemyFlipped)
 	:StaticSprite("Projectile", textures, startLocation)
-	, m_BulletType{}
-	, m_DrawBullet{}
-	, m_Damage{}
 	, m_Cols{ 4 }
 	, m_Angle{ angle }
-	, m_HitBox{}
-	, m_BulletSpeed{}
-	, m_DirVelocity{}
 	, m_IsFlipped{ enemyFlipped }
 {
 	switch (enemyType)
@@ -92,19 +81,19 @@ Projectile::Projectile(const StaticTextures& textures, const Point2f& startLocat
 	case EnemyGunType::pistol:
 		m_BulletType = 0;
 		m_DrawBullet = true;
-		m_BulletSpeed = 700.f;
+		m_BulletSpeed = constants::EnergyBulletSpeed;
 		m_Damage = 8;
 		break;
 	case EnemyGunType::rifle:
 		m_BulletType = 1;
 		m_DrawBullet = true;
-		m_BulletSpeed = 700.f;
+		m_BulletSpeed = constants::EnergyBulletSpeed;
 		m_Damage = 10;
 		break;
 	case EnemyGunType::needle:
 		m_BulletType = 2;
 		m_DrawBullet = true;
-		m_BulletSpeed = 650.f;
+		m_BulletSpeed = constants::NeedleBulletSpeed;
 		m_Damage = 15;
 		break;
 	case EnemyGunType::none:
@@ -115,8 +104,14 @@ Projectile::Projectile(const StaticTextures& textures, const Point2f& startLocat
 		break;
 	}
 
-	m_HitBox = Rectf(startLocation.x - m_pSpriteTexture->GetWidth() / (2 * m_Cols + 2) + 40 * cosf(angle), startLocation.y - m_pSpriteTexture->GetHeight() / 2 + 38 * sinf(angle)
-		, m_pSpriteTexture->GetWidth() / (m_Cols + 2), m_pSpriteTexture->GetHeight());
+	const float hitboxSize{ 8.f };
+	const float xMaxAngleOffset{ 30.f };
+	const float yMaxAngleOffset{ 15.f };
+
+	m_HitBox = Rectf(startLocation.x - hitboxSize / 2 + xMaxAngleOffset * cosf(angle),
+		startLocation.y - hitboxSize / 2 + yMaxAngleOffset * sinf(angle),
+		hitboxSize,
+		hitboxSize);
 
 	m_DirVelocity = Vector2f(m_BulletSpeed * cosf(angle), m_BulletSpeed * sinf(angle));
 }

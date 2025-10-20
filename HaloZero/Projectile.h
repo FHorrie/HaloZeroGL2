@@ -27,19 +27,17 @@ public:
 	Rectf GetHitBox() const;
 
 private:
-	short m_BulletType;
-	bool m_DrawBullet;
-	int m_Damage;
-
-	short m_Cols;
+	bool m_DrawBullet{};
+	bool m_NeedsDeletion{};
+	bool m_IsFlipped{};
 	
-	float m_Angle;
+	short m_BulletType{};
+	short m_Cols{};
+	float m_Angle{};
+	
+	int m_Damage{};
+	float m_BulletSpeed{};
 
-	Rectf m_HitBox;
-
-	float m_BulletSpeed;
-	Vector2f m_DirVelocity;
-	bool m_NeedsDeletion = false;
-
-	bool m_IsFlipped;
+	Vector2f m_DirVelocity{};
+	Rectf m_HitBox{};
 };
