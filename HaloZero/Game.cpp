@@ -597,18 +597,18 @@ void Game::HandleInteractions(float elapsedSec)
 
 void Game::NewPlayerProjectile(float angle)
 {
-	m_pPlayerProjectileArr.push_back(new Projectile(m_Textures
-		, Point2f(m_PlayerPtr->GetShape().left + m_PlayerPtr->GetShape().width / 2
-			, m_PlayerPtr->GetShape().bottom + m_PlayerPtr->GetShape().height / 2)
-		, angle, m_PlayerPtr->GetActiveGun(), m_PlayerPtr->GetFlipped()));
+	m_pPlayerProjectileArr.push_back(new Projectile(m_Textures, 
+		Point2f(m_PlayerPtr->GetShape().left + m_PlayerPtr->GetShape().width / 2
+			, m_PlayerPtr->GetShape().bottom + m_PlayerPtr->GetShape().height * 2.f / 3.f), 
+		angle, m_PlayerPtr->GetActiveGun(), m_PlayerPtr->GetFlipped()));
 }
 
 void Game::NewEnemyProjectile(float angle, int idx)
 {
-	m_pEnemyProjectileArr.push_back(new Projectile(m_Textures
-		, Point2f(m_pEnemyArr[idx]->GetShape().left + m_pEnemyArr[idx]->GetShape().width / 2
-			, m_pEnemyArr[idx]->GetShape().bottom + m_pEnemyArr[idx]->GetShape().height / 2)
-		, angle, m_pEnemyArr[idx]->GetWeapon(), m_pEnemyArr[idx]->GetFlipped()));
+	m_pEnemyProjectileArr.push_back(new Projectile(m_Textures, 
+		Point2f(m_pEnemyArr[idx]->GetShape().left + m_pEnemyArr[idx]->GetShape().width / 2
+			, m_pEnemyArr[idx]->GetShape().bottom + m_pEnemyArr[idx]->GetShape().height / 2), 
+		angle, m_pEnemyArr[idx]->GetWeapon(), m_pEnemyArr[idx]->GetFlipped()));
 }
 
 void Game::HandleEnemyDrop()
