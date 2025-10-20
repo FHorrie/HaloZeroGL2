@@ -63,8 +63,14 @@ Projectile::Projectile(const StaticTextures& textures, const Point2f& startLocat
 		dirAngle = angle - 4 * radOffset;
 	}
 
-	m_HitBox = Rectf(startLocation.x - m_pSpriteTexture->GetWidth() / (2 * m_Cols + 2) + 40 * cosf(newAngle), startLocation.y - m_pSpriteTexture->GetHeight() / 2 + 38 * sinf(newAngle)
-		, m_pSpriteTexture->GetWidth() / (m_Cols + 2), m_pSpriteTexture->GetHeight());
+	const float hitboxSize{ 8.f };
+	const float xMaxAngleOffset{ 30.f };
+	const float yMaxAngleOffset{ 15.f };
+
+	m_HitBox = Rectf(startLocation.x - hitboxSize / 2 + xMaxAngleOffset * cosf(newAngle),
+		startLocation.y - hitboxSize / 2 + yMaxAngleOffset * sinf(newAngle),
+		hitboxSize,
+		hitboxSize);
 
 	m_DirVelocity = Vector2f(m_BulletSpeed * cosf(dirAngle), m_BulletSpeed * sinf(dirAngle));
 }
@@ -124,8 +130,8 @@ void Projectile::Draw() const
 	srcRect.bottom = 0;
 
 	Rectf destRect{};
-	destRect.left = -m_HitBox.width / 2;
-	destRect.bottom = -m_HitBox.height / 2;
+	destRect.left = -srcRect.width / 2;
+	destRect.bottom = -srcRect.height / 2;
 	destRect.width = srcRect.width;
 	destRect.height = srcRect.height;
 
