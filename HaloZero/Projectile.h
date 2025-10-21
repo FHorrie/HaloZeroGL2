@@ -22,9 +22,10 @@ public:
 	bool CheckHit(const Rectf& actorShape);
 
 	void CheckInScreen(const Rectf& WindowRect);
-	bool CheckDeletion() const;
-	int GetDamage() const;
-	Rectf GetHitBox() const;
+
+	bool NeedsDeletion() const { return m_NeedsDeletion; }
+	int GetDamage() const { return m_Damage; }
+	Rectf GetHitBox() const { return m_HitBox; }
 
 private:
 	bool m_DrawBullet{};

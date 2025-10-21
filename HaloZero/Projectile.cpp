@@ -179,18 +179,3 @@ void Projectile::CheckInScreen(const Rectf& WindowRect)
 {
 
 }
-
-bool Projectile::CheckDeletion() const
-{
-	return (m_NeedsDeletion) ? true : false;
-}
-
-int Projectile::GetDamage() const
-{
-	return m_Damage;
-}
-
-Rectf Projectile::GetHitBox() const
-{
-	return m_HitBox;
-}
