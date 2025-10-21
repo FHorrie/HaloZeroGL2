@@ -516,6 +516,8 @@ void Game::HandleInteractions(float elapsedSec)
 			}
 		}
 	}
+	
+	const Point2f playerCameraPos{ m_Camera.CameraPos(m_PlayerPtr->GetShape()) };
 
 	// Handle player projectiles
 	for (int i{}; i < m_PlayerProjectilePtrs.size(); i++)
@@ -529,7 +531,10 @@ void Game::HandleInteractions(float elapsedSec)
 				m_EnemyPtrs[j]->TakeDamage(m_PlayerProjectilePtrs[i]->GetDamage());
 			}
 		}
-		if (m_PlayerProjectilePtrs[i]->CheckDeletion() || !utils::IsOverlapping(m_PlayerProjectilePtrs[i]->GetHitBox(), Rectf(m_Camera.CameraPos(m_PlayerPtr->GetShape()).x, m_Camera.CameraPos(m_PlayerPtr->GetShape()).y, GetViewPort().width, GetViewPort().height)))
+		// Delete if projectile made impact or is out of screen
+		if (m_PlayerProjectilePtrs[i]->NeedsDeletion() 
+			|| utils::IsOverlapping(m_PlayerProjectilePtrs[i]->GetHitBox(), 
+				Rectf(playerCameraPos.x, playerCameraPos.y, GetViewPort().width, GetViewPort().height)) == false)
 		{
 			m_PlayerProjectilePtrs.erase(m_PlayerProjectilePtrs.begin() + i);
 			break;
@@ -546,7 +551,10 @@ void Game::HandleInteractions(float elapsedSec)
 			m_PlayerPtr->TakeDamage(m_EnemyProjectilePtrs[i]->GetDamage());
 		}
 
-		if (m_EnemyProjectilePtrs[i]->CheckDeletion() || !utils::IsOverlapping(m_EnemyProjectilePtrs[i]->GetHitBox(), Rectf(m_Camera.CameraPos(m_PlayerPtr->GetShape()).x, m_Camera.CameraPos(m_PlayerPtr->GetShape()).y, GetViewPort().width, GetViewPort().height)))
+		// Delete if projectile made impact or is out of screen
+		if (m_EnemyProjectilePtrs[i]->NeedsDeletion() 
+			|| utils::IsOverlapping(m_EnemyProjectilePtrs[i]->GetHitBox(), 
+				Rectf(playerCameraPos.x, playerCameraPos.y, GetViewPort().width, GetViewPort().height)) == false)
 		{
 			m_EnemyProjectilePtrs.erase(m_EnemyProjectilePtrs.begin() + i);
 			break;
