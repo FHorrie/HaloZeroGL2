@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <memory>
 #include "utils.h"
 
 class Texture;
@@ -19,7 +20,7 @@ public:
 	void DrawBackground() const;
 	void DrawForeground() const;
 
-	void HandleCollision(Rectf& actor, Vector2f& actorVelocity) const;
+	void HandleLevelCollision(Rectf& actor, Vector2f& actorVelocity) const;
 	bool IsOnGround(const Rectf& actorShape, const Vector2f& actorVelocity) const;
 	bool IsHittingWallLeft(const Rectf& actorShape, const Vector2f& actorVelocity) const;
 	bool IsHittingWallRight(const Rectf& actorShape, const Vector2f& actorVelocity) const;
@@ -30,9 +31,9 @@ public:
 
 private:
 	std::vector<std::vector<Point2f>> m_Vertices;
-	Texture* m_pOutsideTexture;
-	Texture* m_pBackGroundTexture;
-	Texture* m_pForeGroundTexture;
+	const std::unique_ptr<Texture> m_OutsideTexturePtr;
+	const std::unique_ptr<Texture> m_BackGroundTexturePtr;
+	const std::unique_ptr<Texture> m_ForeGroundTexturePtr;
 	const Rectf m_Boundaries;
 	const Rectf m_EndShape;
 };

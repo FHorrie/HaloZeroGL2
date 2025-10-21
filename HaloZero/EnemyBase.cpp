@@ -5,7 +5,7 @@
 
 EnemyBase::EnemyBase(const std::string& spriteType, const StaticTextures& textures, const SoundManager& sounds, const Point2f& startLocation, unsigned short framerate, unsigned short rows, unsigned short cols, short startHealth, float speed, EnemyGunType gunType)
 	:AnimatedSprite(spriteType, textures, startLocation, 0, framerate, rows, cols)
-	, m_State{EnemyState::holding}
+	, m_State{EnemyState::Holding}
 	, m_Gun{ gunType }
 
 	, m_pPlasmaPistolShot{ sounds.GetSoundEffect("PlasmaPistolShot") }
@@ -99,7 +99,7 @@ void EnemyBase::UpdateCurrentFrame(float elapsedSec)
 		}
 		else
 		{
-			if (m_State == EnemyState::shooting) m_ShotFired = true;
+			if (m_State == EnemyState::Shooting) m_ShotFired = true;
 			if (m_Looped) m_CurrentFrame = 0;
 			else;
 		}
@@ -108,7 +108,7 @@ void EnemyBase::UpdateCurrentFrame(float elapsedSec)
 
 void EnemyBase::HandleShootHitBox(float boxWidth)
 {
-	if (m_State != EnemyState::dead)
+	if (m_State != EnemyState::Dead)
 	{
 		//float boxWidth{ 150 };
 		if (!m_IsFlipped)
@@ -122,7 +122,7 @@ void EnemyBase::HandleShootHitBox(float boxWidth)
 
 void EnemyBase::HandleDetectionBox(float boxWidth)
 {
-	if (m_State != EnemyState::dead)
+	if (m_State != EnemyState::Dead)
 	{
 		//float boxWidth{ 700 };
 		m_DetectionBox = Rectf(m_HitBox.left - boxWidth / 2, m_HitBox.bottom, boxWidth + m_HitBox.width, m_HitBox.height * 2);
@@ -142,22 +142,22 @@ void EnemyBase::UpdatePosition(float elapsedSec, const Level& level, float hopFo
 	{
 		switch (m_State)
 		{
-		case EnemyState::holding:
+		case EnemyState::Holding:
 			m_DirVelocity = Vector2f{ 0, 0 };
 			break;
-		case EnemyState::shooting:
+		case EnemyState::Shooting:
 			m_DirVelocity = Vector2f{ 0, 0 };
 			break;
-		case EnemyState::running:
+		case EnemyState::Running:
 			m_DirVelocity.x = m_HorSpeed;
 			break;
-		case EnemyState::melee:
+		case EnemyState::Melee:
 			m_DirVelocity = Vector2f{ 0, 0 };
 			break;
-		case EnemyState::grenade:
+		case EnemyState::Grenade:
 			m_DirVelocity = Vector2f{ 0, 0 };
 			break;
-		case EnemyState::dead:
+		case EnemyState::Dead:
 			if (!m_AnimPlayed)
 			{
 				++m_HitBox.bottom; //make sure the enemy hops when dead
@@ -177,7 +177,7 @@ void EnemyBase::UpdatePosition(float elapsedSec, const Level& level, float hopFo
 
 	m_HitBox.bottom += m_DirVelocity.y * elapsedSec;
 
-	level.HandleCollision(m_HitBox, m_DirVelocity);
+	level.HandleLevelCollision(m_HitBox, m_DirVelocity);
 }
 
 void EnemyBase::TakeDamage(int damage)
@@ -185,16 +185,16 @@ void EnemyBase::TakeDamage(int damage)
 	m_Health -= damage;
 	if (m_Health <= 0)
 	{
-		if (m_State != EnemyState::dead)
+		if (m_State != EnemyState::Dead)
 		{
-			ChangeState(EnemyState::dead);
+			ChangeState(EnemyState::Dead);
 		}
 	}
 }
 
 bool EnemyBase::IsDead() const
 {
-	if (m_State == EnemyState::dead)
+	if (m_State == EnemyState::Dead)
 		return true;
 	else
 		return false;
@@ -208,16 +208,16 @@ bool EnemyBase::IsShooting()
 	{
 		switch (m_Gun)
 		{
-		case EnemyGunType::pistol:
+		case EnemyGunType::PlasmaPistol:
 			m_pPlasmaPistolShot->Play(0);
 			break;
-		case EnemyGunType::rifle:
+		case EnemyGunType::PlasmaRifle:
 			m_pPlasmaRifleShot->Play(0);
 			break;
-		case EnemyGunType::needle:
+		case EnemyGunType::Needler:
 			m_pNeedlerShot->Play(0);
 			break;
-		case EnemyGunType::none:
+		case EnemyGunType::None:
 			m_pHunterShot->Play(0);
 			break;
 		}
@@ -236,7 +236,7 @@ bool EnemyBase::IsShooting()
 
 bool EnemyBase::DropWeapon() const
 {
-	if (m_State == EnemyState::dead && !m_AnimPlayed)
+	if (m_State == EnemyState::Dead && !m_AnimPlayed)
 	{
 		return true;
 	}

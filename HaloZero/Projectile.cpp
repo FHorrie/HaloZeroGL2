@@ -78,25 +78,25 @@ Projectile::Projectile(const StaticTextures& textures, const Point2f& startLocat
 {
 	switch (enemyType)
 	{
-	case EnemyGunType::pistol:
+	case EnemyGunType::PlasmaPistol:
 		m_BulletType = 0;
 		m_DrawBullet = true;
 		m_BulletSpeed = constants::EnergyBulletSpeed;
 		m_Damage = 8;
 		break;
-	case EnemyGunType::rifle:
+	case EnemyGunType::PlasmaRifle:
 		m_BulletType = 1;
 		m_DrawBullet = true;
 		m_BulletSpeed = constants::EnergyBulletSpeed;
 		m_Damage = 10;
 		break;
-	case EnemyGunType::needle:
+	case EnemyGunType::Needler:
 		m_BulletType = 2;
 		m_DrawBullet = true;
 		m_BulletSpeed = constants::NeedleBulletSpeed;
 		m_Damage = 15;
 		break;
-	case EnemyGunType::none:
+	case EnemyGunType::None:
 		m_BulletType = 3;
 		m_DrawBullet = true;
 		m_BulletSpeed = 800.f;
@@ -166,7 +166,7 @@ void Projectile::UpdatePosition(float elapsedSec, const Level& level)
 	if (level.IsOnGround(m_HitBox, m_DirVelocity) || level.IsHittingWallLeft(m_HitBox, m_DirVelocity) || level.IsHittingWallRight(m_HitBox, m_DirVelocity))
 		m_NeedsDeletion = true;
 
-	level.HandleCollision(m_HitBox, m_DirVelocity);
+	level.HandleLevelCollision(m_HitBox, m_DirVelocity);
 
 	m_HitBox.left += m_DirVelocity.x * elapsedSec;
 	m_HitBox.bottom += m_DirVelocity.y * elapsedSec;

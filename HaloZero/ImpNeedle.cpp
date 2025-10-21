@@ -3,7 +3,7 @@
 #include "Texture.h"
 
 ImpNeedle::ImpNeedle(const StaticTextures& textures, const SoundManager& sounds, const Point2f& startLocation)
-	:EnemyBase("ImpNeedle", textures, sounds, startLocation, 8, 4, 8, 30, 100.f, EnemyGunType::needle)
+	:EnemyBase("ImpNeedle", textures, sounds, startLocation, 8, 4, 8, 30, 100.f, EnemyGunType::Needler)
 	,m_pImpDeath{sounds.GetSoundEffect("ImpDeath")}
 {
 }
@@ -22,27 +22,27 @@ void ImpNeedle::UpdateFramesState()
 {
 	switch (m_State)
 	{
-	case EnemyState::holding:
+	case EnemyState::Holding:
 		m_nFrames = 1;
 		m_CurrentRow = 0;
 		m_Looped = false;
 		break;
-	case EnemyState::shooting:
+	case EnemyState::Shooting:
 		m_nFrames = 2;
 		m_CurrentRow = 0;
 		m_Looped = true;
 		break;
-	case EnemyState::running:
+	case EnemyState::Running:
 		m_nFrames = 8;
 		m_CurrentRow = 1;
 		m_Looped = true;
 		break;
-	case EnemyState::grenade:
+	case EnemyState::Grenade:
 		m_nFrames = 2;
 		m_CurrentRow = 2;
 		m_Looped = false;
 		break;
-	case EnemyState::dead:
+	case EnemyState::Dead:
 		m_nFrames = 4;
 		m_CurrentRow = 3;
 		m_Looped = false;
@@ -52,13 +52,13 @@ void ImpNeedle::UpdateFramesState()
 
 void ImpNeedle::StateSwitch(const Rectf& actorShape, float elapsedSec)
 {
-	if (m_State != EnemyState::dead)
+	if (m_State != EnemyState::Dead)
 	{
 		if (utils::IsOverlapping(actorShape, m_ShootHitBox))
 		{
-			if (m_State != EnemyState::shooting)
+			if (m_State != EnemyState::Shooting)
 			{
-				ChangeState(EnemyState::shooting);
+				ChangeState(EnemyState::Shooting);
 			}
 			if (actorShape.left + actorShape.width / 2 <= m_HitBox.left + m_HitBox.width / 2)
 				m_IsFlipped = false;
@@ -67,9 +67,9 @@ void ImpNeedle::StateSwitch(const Rectf& actorShape, float elapsedSec)
 		}
 		else if (utils::IsOverlapping(actorShape, m_DetectionBox))
 		{
-			if (m_State != EnemyState::running)
+			if (m_State != EnemyState::Running)
 			{
-				ChangeState(EnemyState::running);
+				ChangeState(EnemyState::Running);
 			}
 			if (actorShape.left + actorShape.width / 2 <= m_HitBox.left + m_HitBox.width / 2)
 				m_IsFlipped = false;
@@ -77,9 +77,9 @@ void ImpNeedle::StateSwitch(const Rectf& actorShape, float elapsedSec)
 				m_IsFlipped = true;
 		}
 		else
-			if (m_State != EnemyState::holding)
+			if (m_State != EnemyState::Holding)
 			{
-				ChangeState(EnemyState::holding);
+				ChangeState(EnemyState::Holding);
 			}
 	}
 	else

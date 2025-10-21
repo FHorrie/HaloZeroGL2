@@ -60,9 +60,7 @@ private:
 	void PlayDeathBGM() const;
 
 	void LoadElements(std::string fileLocation);
-	//void InitEnemies(); OUTDATED
 	void ClearEnemies();
-	//void InitGunDrops(); OUTDATED
 	void ClearGunDrops();
 	void ClearProjectiles();
 	
@@ -90,12 +88,12 @@ private:
 	Camera m_Camera;
 	HUD m_HUD;
 
-	std::vector<EnemyBase*>	m_pEnemyArr;
+	std::vector<std::unique_ptr<EnemyBase>> m_EnemyPtrs;
 
-	std::vector<GunPickup*> m_pGunArr;
+	std::vector<std::unique_ptr<GunPickup>> m_GunPtrs;
 
-	std::vector<Projectile*> m_pPlayerProjectileArr;
-	std::vector<Projectile*> m_pEnemyProjectileArr;
+	std::vector<std::unique_ptr<Projectile>> m_PlayerProjectilePtrs;
+	std::vector<std::unique_ptr<Projectile>> m_EnemyProjectilePtrs;
 
 	bool m_PickedUp{};
 	bool m_ButtonPressed{};

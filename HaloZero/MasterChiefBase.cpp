@@ -188,7 +188,7 @@ void MasterChiefBase::UpdatePosition(float elapsedSec, const Level& level)
 	
 	m_HitBox.bottom += m_Velocity.y * elapsedSec;
 
-	level.HandleCollision(m_HitBox, m_Velocity);
+	level.HandleLevelCollision(m_HitBox, m_Velocity);
 }
 
 void MasterChiefBase::UpdateInput()

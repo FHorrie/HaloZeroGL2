@@ -6,7 +6,7 @@
 const float EliteRifle::MELEETIME{ 1.5f };
 
 EliteRifle::EliteRifle(const StaticTextures& textures, const SoundManager& sounds, const Point2f& startLocation)
-	:EnemyBase("EliteRifle", textures, sounds, startLocation, 8, 5, 6, 80, 150.f, EnemyGunType::rifle)
+	:EnemyBase("EliteRifle", textures, sounds, startLocation, 8, 5, 6, 80, 150.f, EnemyGunType::PlasmaRifle)
 	, m_pEliteDeath{sounds.GetSoundEffect("EliteDeath")}
 	, m_MeleeAccuTime{}
 {
@@ -43,15 +43,15 @@ void EliteRifle::UpdateCurrentFrame(float elapsedSec)
 		}
 		else
 		{
-			if (m_State == EnemyState::shooting) m_ShotFired = true;
+			if (m_State == EnemyState::Shooting) m_ShotFired = true;
 
 			if (m_Looped) m_CurrentFrame = 0;
 
-			else if (m_State == EnemyState::melee)
+			else if (m_State == EnemyState::Melee)
 			{
 				m_Meleeing = true;
 				m_MeleeAccuTime -= MELEETIME;
-				ChangeState(EnemyState::shooting);
+				ChangeState(EnemyState::Shooting);
 			}
 			else;
 		}
@@ -62,32 +62,32 @@ void EliteRifle::UpdateFramesState()
 {
 	switch (m_State)
 	{
-	case EnemyState::holding:
+	case EnemyState::Holding:
 		m_nFrames = 1;
 		m_CurrentRow = 0;
 		m_Looped = false;
 		break;
-	case EnemyState::shooting:
+	case EnemyState::Shooting:
 		m_nFrames = 2;
 		m_CurrentRow = 0;
 		m_Looped = true;
 		break;
-	case EnemyState::running:
+	case EnemyState::Running:
 		m_nFrames = 6;
 		m_CurrentRow = 1;
 		m_Looped = true;
 		break;
-	case EnemyState::melee:
+	case EnemyState::Melee:
 		m_nFrames = 2;
 		m_CurrentRow = 2;
 		m_Looped = false;
 		break;
-	case EnemyState::grenade:
+	case EnemyState::Grenade:
 		m_nFrames = 2;
 		m_CurrentRow = 3;
 		m_Looped = false;
 		break;
-	case EnemyState::dead:
+	case EnemyState::Dead:
 		m_nFrames = 3;
 		m_CurrentRow = 4;
 		m_Looped = false;
@@ -97,15 +97,15 @@ void EliteRifle::UpdateFramesState()
 
 void EliteRifle::StateSwitch(const Rectf& actorShape, float elapsedSec)
 {
-	if (m_State != EnemyState::dead)
+	if (m_State != EnemyState::Dead)
 	{
 		if (utils::IsOverlapping(actorShape, m_HitBox))
 		{
 			m_MeleeAccuTime += elapsedSec;
 			float reqSec{ 1.6f };
-			if (m_State != EnemyState::melee && m_MeleeAccuTime >= reqSec)
+			if (m_State != EnemyState::Melee && m_MeleeAccuTime >= reqSec)
 			{
-				ChangeState(EnemyState::melee);
+				ChangeState(EnemyState::Melee);
 			}
 			else;
 			if (actorShape.left + actorShape.width / 2 <= m_HitBox.left + m_HitBox.width / 2)
@@ -115,9 +115,9 @@ void EliteRifle::StateSwitch(const Rectf& actorShape, float elapsedSec)
 		}
 		else if (utils::IsOverlapping(actorShape, m_ShootHitBox))
 		{
-			if (m_State != EnemyState::shooting)
+			if (m_State != EnemyState::Shooting)
 			{
-				ChangeState(EnemyState::shooting);
+				ChangeState(EnemyState::Shooting);
 			}
 			if (actorShape.left + actorShape.width / 2 <= m_HitBox.left + m_HitBox.width / 2)
 				m_IsFlipped = false;
@@ -126,9 +126,9 @@ void EliteRifle::StateSwitch(const Rectf& actorShape, float elapsedSec)
 		}
 		else if (utils::IsOverlapping(actorShape, m_DetectionBox))
 		{
-			if (m_State != EnemyState::running)
+			if (m_State != EnemyState::Running)
 			{
-				ChangeState(EnemyState::running);
+				ChangeState(EnemyState::Running);
 			}
 			if (actorShape.left + actorShape.width / 2 <= m_HitBox.left + m_HitBox.width / 2)
 				m_IsFlipped = false;
@@ -136,9 +136,9 @@ void EliteRifle::StateSwitch(const Rectf& actorShape, float elapsedSec)
 				m_IsFlipped = true;
 		}
 		else
-			if (m_State != EnemyState::holding)
+			if (m_State != EnemyState::Holding)
 			{
-				ChangeState(EnemyState::holding);
+				ChangeState(EnemyState::Holding);
 			}
 	}
 	else 

@@ -6,7 +6,7 @@ const float Hunter::MELEETIME{ 1.5f };
 const float Hunter::SHOOTTIME{ 1.f };
 
 Hunter::Hunter(const StaticTextures& textures, const SoundManager& sounds, const Point2f& startLocation)
-	:EnemyBase("Hunter", textures, sounds, startLocation, 10, 4, 6, 200, 100.f, EnemyGunType::none)
+	:EnemyBase("Hunter", textures, sounds, startLocation, 10, 4, 6, 200, 100.f, EnemyGunType::None)
 	, m_pHunterDeath{sounds.GetSoundEffect("HunterDeath")}
 	, m_MeleeAccuTime{}
 	, m_ShootAccuTime{}
@@ -46,17 +46,17 @@ void Hunter::UpdateCurrentFrame(float elapsedSec)
 		{
 			if (m_Looped) m_CurrentFrame = 0;
 
-			if (m_State == EnemyState::shooting)
+			if (m_State == EnemyState::Shooting)
 			{
 				m_ShootAccuTime -= SHOOTTIME;
 				m_ShotFired = true;
-				ChangeState(EnemyState::holding);
+				ChangeState(EnemyState::Holding);
 			}
-			else if (m_State == EnemyState::melee)
+			else if (m_State == EnemyState::Melee)
 			{
 				m_Meleeing = true;
 				m_MeleeAccuTime -= MELEETIME;
-				ChangeState(EnemyState::holding);
+				ChangeState(EnemyState::Holding);
 			}
 			else;
 		}
@@ -67,27 +67,27 @@ void Hunter::UpdateFramesState()
 {
 	switch (m_State)
 	{
-	case EnemyState::holding:
+	case EnemyState::Holding:
 		m_nFrames = 1;
 		m_CurrentRow = 0;
 		m_Looped = false;
 		break;
-	case EnemyState::shooting:
+	case EnemyState::Shooting:
 		m_nFrames = 3;
 		m_CurrentRow = 0;
 		m_Looped = true;
 		break;
-	case EnemyState::melee:
+	case EnemyState::Melee:
 		m_nFrames = 2;
 		m_CurrentRow = 1;
 		m_Looped = false;
 		break;
-	case EnemyState::running:
+	case EnemyState::Running:
 		m_nFrames = 6;
 		m_CurrentRow = 2;
 		m_Looped = true;
 		break;
-	case EnemyState::dead:
+	case EnemyState::Dead:
 		m_nFrames = 4;
 		m_CurrentRow = 3;
 		m_Looped = false;
@@ -97,14 +97,14 @@ void Hunter::UpdateFramesState()
 
 void Hunter::StateSwitch(const Rectf& actorShape, float elapsedSec)
 {
-	if (m_State != EnemyState::dead)
+	if (m_State != EnemyState::Dead)
 	{
 		if (utils::IsOverlapping(actorShape, m_HitBox))
 		{
 			m_MeleeAccuTime += elapsedSec;
-			if (m_State != EnemyState::melee && m_MeleeAccuTime >= MELEETIME)
+			if (m_State != EnemyState::Melee && m_MeleeAccuTime >= MELEETIME)
 			{
-				ChangeState(EnemyState::melee);
+				ChangeState(EnemyState::Melee);
 			}
 			if (actorShape.left + actorShape.width/2 <= m_HitBox.left + m_HitBox.width/2)
 				m_IsFlipped = false;
@@ -115,13 +115,13 @@ void Hunter::StateSwitch(const Rectf& actorShape, float elapsedSec)
 		{
 			if (!m_StopMov)
 			{
-				ChangeState(EnemyState::holding);
+				ChangeState(EnemyState::Holding);
 				m_StopMov = true;
 			}
 
 			m_ShootAccuTime += elapsedSec;
-			if (m_State != EnemyState::shooting && m_ShootAccuTime >= SHOOTTIME)
-				ChangeState(EnemyState::shooting);
+			if (m_State != EnemyState::Shooting && m_ShootAccuTime >= SHOOTTIME)
+				ChangeState(EnemyState::Shooting);
 			
 			if (actorShape.left + actorShape.width / 2 <= m_HitBox.left + m_HitBox.width / 2)
 				m_IsFlipped = false;
@@ -132,9 +132,9 @@ void Hunter::StateSwitch(const Rectf& actorShape, float elapsedSec)
 		else if (utils::IsOverlapping(actorShape, m_DetectionBox))
 		{
 			m_StopMov = false;
-			if (m_State != EnemyState::running)
+			if (m_State != EnemyState::Running)
 			{
-				ChangeState(EnemyState::running);
+				ChangeState(EnemyState::Running);
 			}
 			if (actorShape.left + actorShape.width / 2 <= m_HitBox.left + m_HitBox.width / 2)
 				m_IsFlipped = false;
@@ -142,10 +142,10 @@ void Hunter::StateSwitch(const Rectf& actorShape, float elapsedSec)
 				m_IsFlipped = true;
 		}
 		else
-			if (m_State != EnemyState::holding)
+			if (m_State != EnemyState::Holding)
 			{
 				if (m_StopMov) m_StopMov = false;
-				ChangeState(EnemyState::holding);
+				ChangeState(EnemyState::Holding);
 			}
 	}
 	else

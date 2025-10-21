@@ -90,7 +90,7 @@ void GunPickup::UpdatePosition(float elapsedSec, const Level& level)
 
 	m_HitBox.bottom += m_DirVelocity.y * elapsedSec;
 
-	level.HandleCollision(m_HitBox, m_DirVelocity);
+	level.HandleLevelCollision(m_HitBox, m_DirVelocity);
 }
 
 bool GunPickup::CheckOverlap(const Rectf& actorShape) const

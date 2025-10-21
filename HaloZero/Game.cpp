@@ -119,9 +119,9 @@ void Game::Update( float elapsedSec )
 			};
 		}
 
-		for (int i{}; i < m_pEnemyArr.size(); i++)
+		for (int i{}; i < m_EnemyPtrs.size(); i++)
 		{
-			m_pEnemyArr[i]->Update(elapsedSec, m_Level, m_PlayerPtr->GetShape());
+			m_EnemyPtrs[i]->Update(elapsedSec, m_Level, m_PlayerPtr->GetShape());
 		}
 		HandleInteractions(elapsedSec);
 		HandlePickups(elapsedSec);
@@ -188,8 +188,8 @@ void Game::Draw( ) const
 
 void Game::DrawEntities() const
 {
-	for (int i{}; i < m_pEnemyArr.size(); i++)
-		m_pEnemyArr[i]->Draw();
+	for (int i{}; i < m_EnemyPtrs.size(); i++)
+		m_EnemyPtrs[i]->Draw();
 
 	if (!m_PlayerPtr->IsDead())
 	{		
@@ -200,14 +200,14 @@ void Game::DrawEntities() const
 		m_pPlayerDeath->Draw();
 	}
 
-	for (int i{}; i < m_pGunArr.size(); i++)
-		m_pGunArr[i]->Draw();
+	for (int i{}; i < m_GunPtrs.size(); i++)
+		m_GunPtrs[i]->Draw();
 
-	for (int i{}; i < m_pPlayerProjectileArr.size(); i++)
-		m_pPlayerProjectileArr[i]->Draw();
+	for (int i{}; i < m_PlayerProjectilePtrs.size(); i++)
+		m_PlayerProjectilePtrs[i]->Draw();
 
-	for (int i{}; i < m_pEnemyProjectileArr.size(); i++)
-		m_pEnemyProjectileArr[i]->Draw();
+	for (int i{}; i < m_EnemyProjectilePtrs.size(); i++)
+		m_EnemyProjectilePtrs[i]->Draw();
 }
 
 void Game::DrawScreens() const
@@ -350,146 +350,101 @@ void Game::LoadElements(std::string fileLocation)
 			std::getline(dataFile, enemyType, ',');
 			std::getline(dataFile, x, ',');
 			std::getline(dataFile, y);
-			EnemyBase* pEnemy{};
+
 			if (enemyType == "ImpPistol")
 			{
-				pEnemy = new ImpPistol(m_Textures, m_Sounds, Point2f{ stof(x), stof(y) });
+				m_EnemyPtrs.push_back(std::make_unique<ImpPistol>(m_Textures, m_Sounds, Point2f(stof(x), stof(y))));
 			}
 			else if (enemyType == "ImpNeedle")
 			{
-				pEnemy = new ImpNeedle(m_Textures, m_Sounds, Point2f{ stof(x), stof(y) });
+				m_EnemyPtrs.push_back(std::make_unique<ImpNeedle>(m_Textures, m_Sounds, Point2f(stof(x), stof(y))));
 			}
 			else if (enemyType == "Jackal")
 			{
-				pEnemy = new Jackal(m_Textures, m_Sounds, Point2f{ stof(x), stof(y) });
+				m_EnemyPtrs.push_back(std::make_unique<Jackal>(m_Textures, m_Sounds, Point2f(stof(x), stof(y))));
 			}
 			else if (enemyType == "EliteRifle")
 			{
-				pEnemy = new EliteRifle(m_Textures, m_Sounds, Point2f{ stof(x), stof(y) });
+				m_EnemyPtrs.push_back(std::make_unique<EliteRifle>(m_Textures, m_Sounds, Point2f(stof(x), stof(y))));
 			}
 			else if (enemyType == "Hunter")
 			{
-				pEnemy = new Hunter(m_Textures, m_Sounds, Point2f{ stof(x), stof(y) });
+				m_EnemyPtrs.push_back(std::make_unique<Hunter>(m_Textures, m_Sounds, Point2f(stof(x), stof(y))));
 			}
 			else
 			{
 				exit(421);
 			}
-
-			m_pEnemyArr.push_back(pEnemy);
-
 		}
 	}
 	else if (type == "Guns")
 	{
 		while (!dataFile.eof())
 		{
-			std::string gunType, x, y;
+			std::string gunText{}, x{}, y{};
+			GunType gunType{};
 			//std::cout << "Worked better\n";
 
 			std::getline(dataFile, x, ',');
 			std::getline(dataFile, y, ',');
-			std::getline(dataFile, gunType);
-			GunPickup* pPickup{};
-			if (gunType == "smart")
+			std::getline(dataFile, gunText);
+			if (gunText == "smart")
 			{
-				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::SmartRifle);
+				gunType = GunType::SmartRifle;
 			}
-			else if (gunType == "magnum")
+			else if (gunText == "magnum")
 			{
-				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::MagnumPistol);
+				gunType = GunType::MagnumPistol;
 			}
-			else if (gunType == "pistol")
+			else if (gunText == "pistol")
 			{
-				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::PlasmaPistol);
+				gunType = GunType::PlasmaPistol;
 			}
-			else if (gunType == "rifle")
+			else if (gunText == "rifle")
 			{
-				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::PlasmaRifle);
+				gunType = GunType::PlasmaRifle;
 			}
-			else if (gunType == "needle")
+			else if (gunText == "needle")
 			{
-				pPickup = new GunPickup(m_Textures, Point2f{ stof(x), stof(y) }, GunType::Needler);
+				gunType = GunType::Needler;
 			}
 			else
 			{
 				exit(422);
 			}
 
-			m_pGunArr.push_back(pPickup);
+			m_GunPtrs.push_back(std::make_unique<GunPickup>(m_Textures, Point2f(stof(x),stof(y)), gunType));
 		}
 	}
 }
 
-//void Game::InitEnemies()
-//{
-//	m_pEnemyArr.push_back(new ImpPistol(Point2f(1900, 110)));
-//	m_pEnemyArr.push_back(new Hunter(Point2f(2300, 110)));
-//	m_pEnemyArr.push_back(new ImpPistol(Point2f(2850, 140)));
-//	m_pEnemyArr.push_back(new ImpPistol(Point2f(3650, 110)));
-//	m_pEnemyArr.push_back(new Jackal(Point2f(4350, 440)));
-//	m_pEnemyArr.push_back(new ImpNeedle(Point2f(4400, 440)));
-//	m_pEnemyArr.push_back(new Jackal(Point2f(4600, 440)));
-//	m_pEnemyArr.push_back(new EliteRifle(Point2f(4900, 440)));
-//	m_pEnemyArr.push_back(new ImpNeedle(Point2f(7000, 440)));
-//	m_pEnemyArr.push_back(new EliteRifle(Point2f(7250, 440)));
-//	
-//}
-
 void Game::ClearEnemies()
 {
-	for (int i {}; i < m_pEnemyArr.size(); i++)
-	{
-		delete m_pEnemyArr[i];
-	}
-	m_pEnemyArr.clear();
+	m_EnemyPtrs.clear();
 }
-
-//void Game::InitGunDrops()
-//{
-//	m_pGunArr.push_back(new GunPickup(Point2f(550, 490), GunType::rifle));
-//	m_pGunArr.push_back(new GunPickup(Point2f(1660, 120), GunType::smart));
-//	m_pGunArr.push_back(new GunPickup(Point2f(6920, 490), GunType::magnum));
-//	m_pGunArr.push_back(new GunPickup(Point2f(8410, 120), GunType::magnum));
-//
-//}
 
 void Game::ClearGunDrops()
 {
-	for (int i{}; i < m_pGunArr.size(); i++)
-	{
-		delete m_pGunArr[i];
-	}
-	m_pGunArr.clear();
+	m_GunPtrs.clear();
 }
 
 void Game::ClearProjectiles()
 {
-	for (int i{}; i < m_pPlayerProjectileArr.size(); i++)
-	{
-		delete m_pPlayerProjectileArr[i];
-	}
-	m_pPlayerProjectileArr.clear();
-
-	for (int i{}; i < m_pEnemyProjectileArr.size(); i++)
-	{
-		delete m_pEnemyProjectileArr[i];
-	}
-	m_pEnemyProjectileArr.clear();
+	m_PlayerProjectilePtrs.clear();
+	m_EnemyProjectilePtrs.clear();
 }
 
 void Game::HandlePickups(float elapsedSec)
 {
-	for (int i{}; i < m_pGunArr.size(); i++)
+	for (int i{}; i < m_GunPtrs.size(); i++)
 	{
-		m_pGunArr[i]->Update(elapsedSec, m_Level);
-		if (m_pGunArr[i]->CheckOverlap(m_PlayerPtr->GetShape()))
+		m_GunPtrs[i]->Update(elapsedSec, m_Level);
+		if (m_GunPtrs[i]->CheckOverlap(m_PlayerPtr->GetShape()))
 		{
-			PickupInteract(m_pGunArr[i]->GetGunType(), m_pGunArr[i]->GetAmmo(), m_pGunArr[i]->GetReserve());
+			PickupInteract(m_GunPtrs[i]->GetGunType(), m_GunPtrs[i]->GetAmmo(), m_GunPtrs[i]->GetReserve());
 			if (m_PickedUp)
 			{
-				delete m_pGunArr[i];
-				m_pGunArr.erase(m_pGunArr.begin() + i);
+				m_GunPtrs.erase(m_GunPtrs.begin() + i);
 				m_PickedUp = false;
 			}
 		}
@@ -505,7 +460,7 @@ void Game::PickupInteract(GunType type, int ammo, int reserve)
 		{
 			if (!m_ButtonPressed)
 			{
-				m_pGunArr.push_back(new GunPickup(m_Textures, m_PlayerPtr->GetDropPoint(), m_PlayerPtr->GetActiveGun(), m_PlayerPtr->GetAmmo(), m_PlayerPtr->GetReserve()));
+				m_GunPtrs.push_back(std::make_unique<GunPickup>(m_Textures, m_PlayerPtr->GetDropPoint(), m_PlayerPtr->GetActiveGun(), m_PlayerPtr->GetAmmo(), m_PlayerPtr->GetReserve()));
 				m_PlayerPtr->ChangeGun(type, ammo, reserve, m_PlayerPtr->IsSecondaryEquipped());
 				m_PickedUp = true;
 				m_ButtonPressed = true;
@@ -522,73 +477,78 @@ void Game::PickupInteract(GunType type, int ammo, int reserve)
 
 void Game::HandleInteractions(float elapsedSec)
 {
+	// Handle player interactions
 	if (m_PlayerPtr->IsShooting())
 	{
 		NewPlayerProjectile(m_PlayerPtr->GetAngle());
 	}
 	if (m_PlayerPtr->IsMelee())
 	{
-		for (int i{}; i < m_pEnemyArr.size(); i++)
+		for (int i{}; i < m_EnemyPtrs.size(); i++)
 		{
-			if (utils::IsOverlapping(m_pEnemyArr[i]->GetShape(), m_PlayerPtr->GetShape()) && !m_pEnemyArr[i]->IsDead())
+			if (utils::IsOverlapping(m_EnemyPtrs[i]->GetShape(), m_PlayerPtr->GetShape()) && !m_EnemyPtrs[i]->IsDead())
 			{
 				m_PlayerPtr->PlayMeleeSound();
-				m_pEnemyArr[i]->TakeDamage(50);
+				m_EnemyPtrs[i]->TakeDamage(50);
 			}
 		}
 	}
-	for (int i{}; i < m_pEnemyArr.size(); i++)
-	{
-		if (m_pEnemyArr[i]->IsShooting())
-		{
-			Point2f dspcdPnt{ m_PlayerPtr->GetShape().left - m_pEnemyArr[i]->GetShape().left, 
-							m_PlayerPtr->GetShape().bottom - m_pEnemyArr[i]->GetShape().bottom };
-			float enemyAngle{ atan2f(dspcdPnt.y, dspcdPnt.x)};
 
+	// Handle enemy interactions
+	for (int i{}; i < m_EnemyPtrs.size(); i++)
+	{
+		if (m_EnemyPtrs[i]->IsShooting())
+		{
+			const Point2f aimPoint
+			{ 
+				m_PlayerPtr->GetShape().left - m_EnemyPtrs[i]->GetShape().left, 
+				m_PlayerPtr->GetShape().bottom - m_EnemyPtrs[i]->GetShape().bottom
+			};
+			const float enemyAngle{ atan2f(aimPoint.y, aimPoint.x)};
 			NewEnemyProjectile(enemyAngle, i);
 		}
-		if (m_pEnemyArr[i]->IsMelee())
+		if (m_EnemyPtrs[i]->IsMelee())
 		{
-			if (utils::IsOverlapping(m_pEnemyArr[i]->GetShape(), m_PlayerPtr->GetShape()))
+			if (utils::IsOverlapping(m_EnemyPtrs[i]->GetShape(), m_PlayerPtr->GetShape()))
 			{
 				m_PlayerPtr->PlayMeleeSound();
 				m_PlayerPtr->TakeDamage(60);
 			}
 		}
 	}
-	for (int i{}; i < m_pPlayerProjectileArr.size(); i++)
-	{
-		m_pPlayerProjectileArr[i]->UpdatePosition(elapsedSec, m_Level);
 
-		for (int j{}; j < m_pEnemyArr.size(); j++)
+	// Handle player projectiles
+	for (int i{}; i < m_PlayerProjectilePtrs.size(); i++)
+	{
+		m_PlayerProjectilePtrs[i]->UpdatePosition(elapsedSec, m_Level);
+
+		for (int j{}; j < m_EnemyPtrs.size(); j++)
 		{
-			if (m_pPlayerProjectileArr[i]->CheckHit(m_pEnemyArr[j]->GetShape()))
+			if (m_PlayerProjectilePtrs[i]->CheckHit(m_EnemyPtrs[j]->GetShape()))
 			{
-				m_pEnemyArr[j]->TakeDamage(m_pPlayerProjectileArr[i]->GetDamage());
+				m_EnemyPtrs[j]->TakeDamage(m_PlayerProjectilePtrs[i]->GetDamage());
 			}
 		}
-		if (m_pPlayerProjectileArr[i]->CheckDeletion() || !utils::IsOverlapping(m_pPlayerProjectileArr[i]->GetHitBox(), Rectf(m_Camera.CameraPos(m_PlayerPtr->GetShape()).x, m_Camera.CameraPos(m_PlayerPtr->GetShape()).y, GetViewPort().width, GetViewPort().height)))
+		if (m_PlayerProjectilePtrs[i]->CheckDeletion() || !utils::IsOverlapping(m_PlayerProjectilePtrs[i]->GetHitBox(), Rectf(m_Camera.CameraPos(m_PlayerPtr->GetShape()).x, m_Camera.CameraPos(m_PlayerPtr->GetShape()).y, GetViewPort().width, GetViewPort().height)))
 		{
-			delete m_pPlayerProjectileArr[i];
-			//std::cout << "DeleteProjectile\n";
-			m_pPlayerProjectileArr.erase(m_pPlayerProjectileArr.begin() + i);
+			m_PlayerProjectilePtrs.erase(m_PlayerProjectilePtrs.begin() + i);
 			break;
 		}
 	}
-	for (int i{}; i < m_pEnemyProjectileArr.size(); i++)
-	{
-		m_pEnemyProjectileArr[i]->UpdatePosition(elapsedSec, m_Level);
 
-		if (m_pEnemyProjectileArr[i]->CheckHit(m_PlayerPtr->GetShape()))
+	// Handle enemy projectiles
+	for (int i{}; i < m_EnemyProjectilePtrs.size(); i++)
+	{
+		m_EnemyProjectilePtrs[i]->UpdatePosition(elapsedSec, m_Level);
+
+		if (m_EnemyProjectilePtrs[i]->CheckHit(m_PlayerPtr->GetShape()))
 		{
-			m_PlayerPtr->TakeDamage(m_pEnemyProjectileArr[i]->GetDamage());
+			m_PlayerPtr->TakeDamage(m_EnemyProjectilePtrs[i]->GetDamage());
 		}
 
-		if (m_pEnemyProjectileArr[i]->CheckDeletion() || !utils::IsOverlapping(m_pEnemyProjectileArr[i]->GetHitBox(), Rectf(m_Camera.CameraPos(m_PlayerPtr->GetShape()).x, m_Camera.CameraPos(m_PlayerPtr->GetShape()).y, GetViewPort().width, GetViewPort().height)))
+		if (m_EnemyProjectilePtrs[i]->CheckDeletion() || !utils::IsOverlapping(m_EnemyProjectilePtrs[i]->GetHitBox(), Rectf(m_Camera.CameraPos(m_PlayerPtr->GetShape()).x, m_Camera.CameraPos(m_PlayerPtr->GetShape()).y, GetViewPort().width, GetViewPort().height)))
 		{
-			delete m_pEnemyProjectileArr[i];
-			//std::cout << "DeleteProjectile\n";
-			m_pEnemyProjectileArr.erase(m_pEnemyProjectileArr.begin() + i);
+			m_EnemyProjectilePtrs.erase(m_EnemyProjectilePtrs.begin() + i);
 			break;
 		}
 	}
@@ -597,7 +557,7 @@ void Game::HandleInteractions(float elapsedSec)
 
 void Game::NewPlayerProjectile(float angle)
 {
-	m_pPlayerProjectileArr.push_back(new Projectile(m_Textures, 
+	m_PlayerProjectilePtrs.push_back(std::make_unique<Projectile>(m_Textures, 
 		Point2f(m_PlayerPtr->GetShape().left + m_PlayerPtr->GetShape().width / 2
 			, m_PlayerPtr->GetShape().bottom + m_PlayerPtr->GetShape().height * 2.f / 3.f), 
 		angle, m_PlayerPtr->GetActiveGun(), m_PlayerPtr->GetFlipped()));
@@ -605,33 +565,35 @@ void Game::NewPlayerProjectile(float angle)
 
 void Game::NewEnemyProjectile(float angle, int idx)
 {
-	m_pEnemyProjectileArr.push_back(new Projectile(m_Textures, 
-		Point2f(m_pEnemyArr[idx]->GetShape().left + m_pEnemyArr[idx]->GetShape().width / 2
-			, m_pEnemyArr[idx]->GetShape().bottom + m_pEnemyArr[idx]->GetShape().height / 2), 
-		angle, m_pEnemyArr[idx]->GetWeapon(), m_pEnemyArr[idx]->GetFlipped()));
+	m_EnemyProjectilePtrs.push_back(std::make_unique<Projectile>(m_Textures,
+		Point2f(m_EnemyPtrs[idx]->GetShape().left + m_EnemyPtrs[idx]->GetShape().width / 2
+			, m_EnemyPtrs[idx]->GetShape().bottom + m_EnemyPtrs[idx]->GetShape().height / 2), 
+		angle, m_EnemyPtrs[idx]->GetWeapon(), m_EnemyPtrs[idx]->GetFlipped()));
 }
 
 void Game::HandleEnemyDrop()
 {
-	for (int i{}; i < m_pEnemyArr.size(); i++)
+	for (int i{}; i < m_EnemyPtrs.size(); i++)
 	{
-		if (m_pEnemyArr[i]->DropWeapon())
+		if (m_EnemyPtrs[i]->DropWeapon())
 		{
-			//std::cout << "ok";
-			switch (m_pEnemyArr[i]->GetWeapon())
+			GunType gunType{};
+			switch (m_EnemyPtrs[i]->GetWeapon())
 			{
-			case EnemyGunType::pistol:
-				m_pGunArr.push_back(new GunPickup{ m_Textures, m_pEnemyArr[i]->GetDropPoint(), GunType::PlasmaPistol });
+			case EnemyGunType::PlasmaPistol:
+				gunType = GunType::PlasmaPistol;
 				break;
-			case EnemyGunType::rifle:
-				m_pGunArr.push_back(new GunPickup{ m_Textures, m_pEnemyArr[i]->GetDropPoint(), GunType::PlasmaRifle });
+			case EnemyGunType::PlasmaRifle:
+				gunType = GunType::PlasmaRifle;
 				break;
-			case EnemyGunType::needle:
-				m_pGunArr.push_back(new GunPickup{ m_Textures, m_pEnemyArr[i]->GetDropPoint(), GunType::Needler });
+			case EnemyGunType::Needler:
+				gunType = GunType::Needler;
 				break;
 			default:
 				break;
 			}
+			
+			m_GunPtrs.push_back(std::make_unique<GunPickup>(m_Textures, m_EnemyPtrs[i]->GetDropPoint(), gunType));
 		}
 	}
 }

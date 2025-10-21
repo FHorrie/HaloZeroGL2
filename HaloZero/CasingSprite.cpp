@@ -49,7 +49,7 @@ void CasingSprite::UpdatePosition(float elapsedSec, const Level& level)
 	m_HitBox.bottom += m_DirVelocity.y * elapsedSec;
 
 	m_Position = Point2f(m_HitBox.left + m_HitBox.width / 2, m_HitBox.bottom + m_HitBox.height / 2);
-	level.HandleCollision(m_HitBox, m_DirVelocity);
+	level.HandleLevelCollision(m_HitBox, m_DirVelocity);
 }
 
 bool CasingSprite::CheckDeletion()

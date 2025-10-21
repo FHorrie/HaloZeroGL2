@@ -6,20 +6,20 @@
 
 enum class EnemyState
 {
-	holding,
-	shooting,
-	running,
-	melee,
-	grenade,
-	dead
+	Holding,
+	Shooting,
+	Running,
+	Melee,
+	Grenade,
+	Dead
 };
 
 enum class EnemyGunType
 {
-	pistol,
-	rifle,
-	needle,
-	none
+	PlasmaPistol,
+	PlasmaRifle,
+	Needler,
+	None
 };
 
 class EnemyBase : public AnimatedSprite
