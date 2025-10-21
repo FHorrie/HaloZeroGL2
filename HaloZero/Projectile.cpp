@@ -118,32 +118,32 @@ Projectile::Projectile(const StaticTextures& textures, const Point2f& startLocat
 
 void Projectile::Draw() const
 {
-	Rectf srcRect{};
-	srcRect.width = m_pSpriteTexture->GetWidth() / m_Cols;
-	srcRect.height = m_pSpriteTexture->GetHeight();
-	srcRect.left = m_BulletType * srcRect.width;
-	srcRect.bottom = 0;
-
-	Rectf destRect{};
-	destRect.left = -srcRect.width / 2;
-	destRect.bottom = -srcRect.height / 2;
-	destRect.width = srcRect.width;
-	destRect.height = srcRect.height;
-
-	glPushMatrix();
-	glTranslatef(m_HitBox.left + m_HitBox.width / 2, m_HitBox.bottom + m_HitBox.height / 2, 0);
-
-	glRotatef(m_Angle / float(M_PI) * 180.f, 0, 0, 1);
-
-	if (m_IsFlipped)
-		glScalef(-1, 1, 1);
-	
 	if (m_DrawBullet)
 	{
+		Rectf srcRect{};
+		srcRect.width = m_pSpriteTexture->GetWidth() / m_Cols;
+		srcRect.height = m_pSpriteTexture->GetHeight();
+		srcRect.left = m_BulletType * srcRect.width;
+		srcRect.bottom = 0;
+
+		Rectf destRect{};
+		destRect.left = -srcRect.width / 2;
+		destRect.bottom = -srcRect.height / 2;
+		destRect.width = srcRect.width;
+		destRect.height = srcRect.height;
+
+		glPushMatrix();
+		glTranslatef(m_HitBox.left + m_HitBox.width / 2, m_HitBox.bottom + m_HitBox.height / 2, 0);
+
+		glRotatef(m_Angle / float(M_PI) * 180.f, 0, 0, 1);
+
+		if (m_IsFlipped)
+			glScalef(-1, 1, 1);
+
 		m_pSpriteTexture->Draw(destRect, srcRect);
+
+		glPopMatrix();
 	}
-	
-	glPopMatrix();
 
 #ifdef _DEBUG_HITBOX
 	utils::SetColor(Color4f(1.f, 1.f, 1.f, 1.f));
@@ -163,16 +163,16 @@ bool Projectile::CheckHit(const Rectf& actorShape)
 
 void Projectile::UpdatePosition(float elapsedSec, const Level& level)
 {
-	if (level.IsOnGround(m_HitBox, m_DirVelocity) || level.IsHittingWallLeft(m_HitBox, m_DirVelocity) || level.IsHittingWallRight(m_HitBox, m_DirVelocity))
+	if (level.IsOnGround(m_HitBox, m_DirVelocity) 
+		|| level.IsHittingWallLeft(m_HitBox, m_DirVelocity) 
+		|| level.IsHittingWallRight(m_HitBox, m_DirVelocity))
 		m_NeedsDeletion = true;
 
 	level.HandleLevelCollision(m_HitBox, m_DirVelocity);
 
 	m_HitBox.left += m_DirVelocity.x * elapsedSec;
 	m_HitBox.bottom += m_DirVelocity.y * elapsedSec;
-
 	m_Position = Point2f(m_HitBox.left + m_HitBox.width / 2, m_HitBox.bottom + m_HitBox.height / 2);
-	
 }
 
 void Projectile::CheckInScreen(const Rectf& WindowRect)
